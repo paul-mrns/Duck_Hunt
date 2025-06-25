@@ -39,19 +39,34 @@ void DuckHunt::Core::handleInput(sf::Event event)
         _input = left_click;
 }
 
+void DuckHunt::Core::menuHandler()
+{
+    if (!_menu)
+        _menu = std::make_unique<Menu>(_highScores);
+    _menu->handleInput(_input);
+    if (_input != quit)
+        _input = none;
+    _menu->update();
+    _menu->draw(_window);
+    if (_menu->isGameStartRequested()) {
+        _gamemode = _menu->gamemodeChosen();
+        _state = play;
+    }
+}
+
+void DuckHunt::Core::playHandler()
+{
+   // if (!play)
+        //play = std::make_unique<Play>();
+
+}
+
 void DuckHunt::Core::stateHandler()
 {
-    if (_state == menu) {
-        if (!_menu)
-            _menu = std::make_unique<Menu>(_highScores);
-        _menu->handleInput(_input);
-        if (_input != quit)
-            _input = none;
-        _menu->update();
-        _menu->draw(_window);
-        if (_menu->isGameStartRequested())
-            _state = play;
-    }
+    if (_state == menu)
+        menuHandler();
+    else if (_state == play)
+        playHandler();
 }
 
 void DuckHunt::Core::gameLoop()

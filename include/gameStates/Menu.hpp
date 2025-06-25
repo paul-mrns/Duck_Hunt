@@ -1,7 +1,7 @@
 /*
 ** Paul Mourens project
 ** Duck Hunt cpp
-** Menu.cpp
+** Menu.hpp
 */
 
 #pragma once
@@ -25,6 +25,7 @@ namespace DuckHunt
             void update();
             void draw(sf::RenderWindow& window);
             bool isGameStartRequested() const;
+            DuckHunt::gamemode gamemodeChosen() const;
 
         private:
             std::unique_ptr<Assets::MenuAssets> _assets;
@@ -32,8 +33,10 @@ namespace DuckHunt
             bool _startGame;
             const std::vector<DuckHunt::PlayerScore>& _highScores;
             bool _scoreboardActive;
+            gamemode _gamemode;
 
             void updateSelection();
             void drawScores(sf::RenderWindow& window);
+            gamemode getGamemode(int selection);
     };
 }

@@ -39,6 +39,7 @@ namespace DuckHunt
         std::string _username;
         sf::RenderWindow _window;
         input _input;
+        gamemode _gamemode;
         std::unique_ptr<DuckHunt::Menu> _menu;
 
         // Score
@@ -49,6 +50,10 @@ namespace DuckHunt
         void loadHighScores(const std::string& filename);
         void gameLoop();
         void handleInput(sf::Event event);
+        
+        //stateHandler
         void stateHandler();
+        void menuHandler();
+        void playHandler();
     };
 }

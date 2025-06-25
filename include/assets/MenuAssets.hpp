@@ -13,7 +13,7 @@
 #include <SFML/Window.hpp>
 #include "AAssets.hpp"
 
-#define MENU_FONT_PATH "assets/fonts/menu_font.ttf"
+#define MENU_FONT_PATH "assets/fonts/PressStart2P-Regular.ttf"
 #define LOGO_WIDTH 700.0f
 #define LOGO_HEIGHT 550.0f
 

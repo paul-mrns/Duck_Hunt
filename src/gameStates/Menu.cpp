@@ -39,6 +39,11 @@ bool DuckHunt::Menu::isGameStartRequested() const
     return _startGame;
 }
 
+DuckHunt::gamemode DuckHunt::Menu::gamemodeChosen() const
+{
+    return _gamemode;
+}
+
 void DuckHunt::Menu::updateSelection()
 {
     sf::Color orange(255, 128, 13);
@@ -49,17 +54,26 @@ void DuckHunt::Menu::updateSelection()
     _assets->_scores.setFillColor(_selectedOption == 3 ? sf::Color::Red : sf::Color::White);
 }
 
+DuckHunt::gamemode DuckHunt::Menu::getGamemode(int selection)
+{
+    if (selection == 0)
+        return oneDuck;
+    else if (selection == 1)
+        return twoDucks;
+    else if (selection == 2)
+        return clayShooting;
+    return unknownGamemode;
+}
+
 void DuckHunt::Menu::handleInput(input &in)
 {
     if (in == enter) {
-        if (_selectedOption == 0)
-            _startGame = true;
-        if (_selectedOption == 3) {
+        if (_selectedOption == 3)
             _scoreboardActive = true;
-            return;
+        else {
+            _gamemode = getGamemode(_selectedOption);
+            _startGame = true;
         }
-    } else if (in == left_click) {
-        //check hitboxes
     } else if (in == arrow_down)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;
     else if (in == arrow_up)

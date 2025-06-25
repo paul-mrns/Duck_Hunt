@@ -27,7 +27,7 @@ void Assets::MenuAssets::createScoreboard()
     _highscoreText.setFont(_font);
     _highscoreText.setString("HIGH SCORES");
     _highscoreText.setFillColor(orange);
-    _highscoreText.setCharacterSize(50);
+    _highscoreText.setCharacterSize(40);
     _highscoreText.setOutlineThickness(2.0f);
     _highscoreText.setOutlineColor(sf::Color::Red);
     sf::FloatRect highscoreBounds = _highscoreText.getLocalBounds();
@@ -40,11 +40,10 @@ void Assets::MenuAssets::createHeader()
 
     header.setFont(_font);
     header.setString("RANK   SCORE   NAME");
-    header.setCharacterSize(50);
     header.setFillColor(sf::Color::White);
     header.setOutlineThickness(2.0f);
     header.setOutlineColor(sf::Color::Magenta);
-    header.setPosition(650.0f, 250.0f);
+    header.setPosition(650.0f, 275.0f);
     _highScores.push_back(header);
 }
 
@@ -78,13 +77,12 @@ void Assets::MenuAssets::createPodium(const std::vector<DuckHunt::PlayerScore> &
 {
     std::vector<std::string> ranks = {"1st", "2nd", "3rd"};
     std::string line;
-    int y = 325;
+    int y = 350;
 
     for (size_t i = 0; i < highscores.size() && i < 3; i++) {
         sf::Text scoreline;
         scoreline.setFont(_font);
         scoreline.setFillColor(colorForRanks(i + 1));
-        scoreline.setCharacterSize(50);
         scoreline.setPosition(650.0f, y);
         y += 50;
         line = alignString(highscores[i].score);
@@ -99,14 +97,13 @@ void Assets::MenuAssets::createScores(const std::vector<DuckHunt::PlayerScore> &
     if (highscores.size() == 1 && highscores[0].score == 0 && highscores[0].username == "")
         return;
     createPodium(highscores);
-    int y = 475;
+    int y = 500;
     for (size_t i = 3; i < highscores.size() && i < 10; i++) {
         sf::Text scoreline;
         std::string line;
         std::string rank;
         scoreline.setFont(_font);
         scoreline.setFillColor(colorForRanks(i + 1));
-        scoreline.setCharacterSize(50);
         scoreline.setPosition(650.0f, y);
         y += 50;
         rank = std::to_string(i + 1) + "th";
@@ -127,27 +124,23 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
     sf::Text game0;
     game0.setString("GAME A \t 1 DUCK");
     game0.setFont(_font);
-    game0.setCharacterSize(40);
-    game0.setPosition(740.0f, 550.0f);
+    game0.setPosition(700.0f, 550.0f);
     _games.push_back(game0);
 
     sf::Text game1;
     game1.setString("GAME B \t 2 DUCKS");
     game1.setFont(_font);
-    game1.setCharacterSize(40);
-    game1.setPosition(740.0f, 600.0f);
+    game1.setPosition(700.0f, 600.0f);
     _games.push_back(game1);
 
     sf::Text game2;
     game2.setString("GAME C \t CLAY SHOOTING");
     game2.setFont(_font);
-    game2.setCharacterSize(40);
-    game2.setPosition(740.0f, 650.0f);
+    game2.setPosition(700.0f, 650.0f);
     _games.push_back(game2);
 
     _scores.setString("CLICK TO SEE SCORES");
     _scores.setFont(_font);
-    _scores.setCharacterSize(40);
     sf::FloatRect scoresBounds = _scores.getLocalBounds();
     _scores.setPosition((WINDOW_WIDTH - scoresBounds.width) / 2.f - scoresBounds.left, 750.f);
 
@@ -155,7 +148,6 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
     std::string score = std::to_string(highscores[0].score);
     _topScore.setString("TOP SCORE = " + score + " (" + highscores[0].username + ")");
     _topScore.setFont(_font);
-    _topScore.setCharacterSize(40);
     sf::FloatRect scoreBounds = _topScore.getLocalBounds();
     _topScore.setPosition((WINDOW_WIDTH - scoreBounds.width) / 2.f - scoreBounds.left, 800.f);
     _topScore.setFillColor(sf::Color::Green);
@@ -163,7 +155,7 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
     //credits
     _credits.setString("@2025 PAUL MOURENS CO.,LTD.");
     _credits.setFont(_font);
-    _credits.setCharacterSize(50);
+    _credits.setCharacterSize(40);
     sf::FloatRect creditsBounds = _credits.getLocalBounds();
     _credits.setPosition((WINDOW_WIDTH - creditsBounds.width) / 2.f - creditsBounds.left, 900.f);
     _credits.setFillColor(sf::Color::White);

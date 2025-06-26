@@ -41,8 +41,10 @@ void DuckHunt::Core::handleInput(sf::Event event)
 
 void DuckHunt::Core::menuHandler()
 {
-    if (!_menu)
-        _menu = std::make_unique<Menu>(_highScores);
+    if (!_menu) {
+        _menu = std::make_unique<Menu>(_highScores, _audio);
+        _audio.play_music(START_MUSIC, false);
+    }
     _menu->handleInput(_input);
     if (_input != quit)
         _input = none;
@@ -56,9 +58,17 @@ void DuckHunt::Core::menuHandler()
 
 void DuckHunt::Core::playHandler()
 {
-   // if (!play)
-        //play = std::make_unique<Play>();
-
+   if (!_play) {
+        _play = std::make_unique<Play>(_score, _audio);
+        _audio.play_music(INTRO_MUSIC, false);
+   }
+    _play->handleInput(_input);
+    if (_input != quit)
+        _input = none;
+    _play->update();
+    _play->draw(_window);
+    if (_play->isGameOver() == true)
+        _state = game_end;
 }
 
 void DuckHunt::Core::stateHandler()

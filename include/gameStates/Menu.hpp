@@ -5,9 +5,9 @@
 */
 
 #pragma once
-#include "Core.hpp"
-#include "assets/MenuAssets.hpp"
+#include "../assets/MenuAssets.hpp"
 #include "Types.hpp"
+#include "Audio.hpp"
 
 namespace Assets
 {
@@ -19,7 +19,7 @@ namespace DuckHunt
     class Menu
     {
         public:
-            Menu(const std::vector<DuckHunt::PlayerScore>& highScores);
+            Menu(const std::vector<DuckHunt::PlayerScore>& highScores, DuckHunt::Audio& audio);
 
             void handleInput(input &in);
             void update();
@@ -34,6 +34,7 @@ namespace DuckHunt
             const std::vector<DuckHunt::PlayerScore>& _highScores;
             bool _scoreboardActive;
             gamemode _gamemode;
+            DuckHunt::Audio& _audio;
 
             void updateSelection();
             void drawScores(sf::RenderWindow& window);

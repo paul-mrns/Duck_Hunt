@@ -7,6 +7,10 @@
 
 #pragma once
 #include "IAssets.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 
 namespace Assets
 {
@@ -15,9 +19,6 @@ namespace Assets
         public:
             AAssets() = default;
             ~AAssets() = default;
-
-            sf::Texture _backgroundText;
-            sf::Sprite _backgroundSpr;
 
             void resizeSprite(sf::Sprite &sprite, const sf::Texture &texture, float width, float height)
             {

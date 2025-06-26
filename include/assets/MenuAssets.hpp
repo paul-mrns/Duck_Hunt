@@ -1,7 +1,7 @@
 /*
 ** Paul Mourens project
 ** Duck Hunt cpp
-** Menu.cpp
+** MenuAssets.cpp
 ** assets handling: Menu
 */
 
@@ -12,6 +12,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include "AAssets.hpp"
+#include "Core.hpp"
 
 #define MENU_FONT_PATH "assets/fonts/PressStart2P-Regular.ttf"
 #define LOGO_WIDTH 700.0f
@@ -46,12 +47,10 @@ namespace Assets
             void createPodium(const std::vector<DuckHunt::PlayerScore> &highscores);
             void createScores(const std::vector<DuckHunt::PlayerScore> &highscores);
 
-
             MenuAssets(const std::vector<DuckHunt::PlayerScore> &highscores);
             ~MenuAssets() = default;
 
             void textAssets(const std::vector<DuckHunt::PlayerScore> &highscores);
             void logoAssets();
-
     };
 }

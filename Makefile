@@ -14,8 +14,13 @@ YELLOW        = \033[0;33m
 SRC =	src/main.cpp 	\
 		src/Core.cpp	\
 		src/Score.cpp	\
+		src/Audio.cpp 	\
 		src/gameStates/Menu.cpp	\
-		src/assets/MenuAssets.cpp
+		src/gameStates/Play.cpp \
+		src/assets/MenuAssets.cpp	\
+		src/assets/PlayAssets.cpp	\
+		src/animation/Dog.cpp	\
+		src/animation/AAnimation.cpp
 
 OBJ = $(SRC:.cpp=.o)
 OBJ := $(addprefix obj/, $(OBJ))

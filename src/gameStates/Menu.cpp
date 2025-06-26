@@ -7,10 +7,11 @@
 #include "gameStates/Menu.hpp"
 #include "assets/MenuAssets.hpp"
 
-DuckHunt::Menu::Menu(const std::vector<PlayerScore>& highScores)
-    : _selectedOption(0), _startGame(false), _highScores(highScores)
+DuckHunt::Menu::Menu(const std::vector<PlayerScore>& highScores, Audio& audio)
+    : _selectedOption(0), _startGame(false), _highScores(highScores), _audio(audio)
 {
     _assets = std::make_unique<Assets::MenuAssets>(highScores);
+    //_audio.play_music(START_MUSIC);
 }
 
 void DuckHunt::Menu::drawScores(sf::RenderWindow& window)
@@ -73,6 +74,7 @@ void DuckHunt::Menu::handleInput(input &in)
         else {
             _gamemode = getGamemode(_selectedOption);
             _startGame = true;
+            _audio.stop_music(START_MUSIC);
         }
     } else if (in == arrow_down)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;

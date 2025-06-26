@@ -1,7 +1,7 @@
 /*
 ** Paul Mourens project
 ** Duck Hunt cpp
-** Core.cpp
+** Core.hpp
 */
 
 #pragma once
@@ -15,9 +15,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 
 #include "gameStates/Menu.hpp"
-#include "Types.hpp"
+#include "gameStates/Play.hpp"
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGTH 1080
@@ -27,7 +28,9 @@
 
 namespace DuckHunt
 {
+    class Audio;
     class Menu;
+    class Play;
     class Core
     {
     public:
@@ -40,11 +43,14 @@ namespace DuckHunt
         sf::RenderWindow _window;
         input _input;
         gamemode _gamemode;
+        Audio _audio;
+
+        //gamestates
         std::unique_ptr<DuckHunt::Menu> _menu;
+        std::unique_ptr<DuckHunt::Play> _play;
 
         // Score
-        int _score;
-        int _topScore;
+        int _score = 0;
         std::vector<PlayerScore> _highScores;
 
         void loadHighScores(const std::string& filename);

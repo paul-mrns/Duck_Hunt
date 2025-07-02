@@ -16,5 +16,6 @@ namespace Animation {
             virtual void draw(sf::RenderWindow& window) = 0;
             virtual void setPosition(sf::Vector2f pos) = 0;
             virtual sf::Vector2f getPosition() const = 0;
+            virtual sf::Sprite getSprite() const = 0;
     };
 }

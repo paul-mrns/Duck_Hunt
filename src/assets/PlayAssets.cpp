@@ -128,6 +128,10 @@ void Assets::PlayAssets::visualAssets()
     resizeSprite(_backgroundSpr, _backgroundText, WINDOW_WIDTH, WINDOW_HEIGHT);
     _backgroundSpr.setPosition(0, 0);
     _spritesheet.loadFromFile("assets/play/spriteSheet.png");
+    _grassText.loadFromFile("assets/play/tall_grasses.png");
+    _grassSpr.setTexture(_grassText);
+    resizeSprite(_grassSpr, _grassText, WINDOW_WIDTH, WINDOW_HEIGHT);
+    _grassSpr.setPosition(0, 0);
 }
 
 void Assets::PlayAssets::setRound(int round)

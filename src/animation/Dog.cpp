@@ -7,9 +7,14 @@
 #include "animation/Dog.hpp"
 #include "Core.hpp"
 
-void Animation::Dog::sniff(float dt)
+Animation::Dog::Dog(const sf::Texture& texture)
 {
-    update(dt);
+    initFramesRects();
+    setTexture(texture);
+    setFrames(_sniffFrames);
+    setSpeed(0.2f);
+    setPosition({400.0f, 800.f});
+    _sprite.setScale(1.5f, 1.5f);
 }
 
 void Animation::Dog::initFramesRects()
@@ -26,19 +31,20 @@ void Animation::Dog::initFramesRects()
         {360, 000, 120, 110},
         {480, 000, 120, 110}
     };
+    _happy1Frame = {635, 0, 115, 100};
     _sniffOrder = {0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 3, 4};
     _jumpOrder  = {0, 1, 2};
 }
 
-
-Animation::Dog::Dog(const sf::Texture& texture)
+void Animation::Dog::happy1(sf::Vector2f pos)
 {
-    initFramesRects();
-    setTexture(texture);
-    setFrames(_sniffFrames);
-    setSpeed(0.2f);
-    setPosition({400.0f, 800.f});
-    _sprite.setScale(1.5f, 1.5f);
+    _state = DogState::Happy1;
+    _rising = true;
+    _elapsed = 0.f;
+    _speed = 0.15f;
+    _sprite.setTextureRect(_happy1Frame);
+    _sprite.setPosition(pos);
+    _targetY = 400.0f;
 }
 
 void Animation::Dog::update(float dt)
@@ -81,6 +87,24 @@ void Animation::Dog::update(float dt)
         float yOffset = _jumpHeights[_frameIndex];
         sf::Vector2f base = _jumpStartPos;
         _sprite.setPosition(base.x, base.y + yOffset);
+    } else if (_state == DogState::Happy1) {
+        if (_rising) {
+            _elapsed += dt;
+            float riseDuration = 1.7f;
+            float totalRise = 250.f;
+            float step = (_riseSpeed = totalRise / riseDuration) * dt;
+            sf::Vector2f pos = _sprite.getPosition();
+            pos.y -= step;
+            _sprite.setPosition(pos);
+            if (_elapsed >= riseDuration) {
+                _rising = false;
+                _elapsed = 0.f;
+            }
+        } else {
+            _elapsed += dt;
+            if (_elapsed >= 1.5f)
+                _state = DogState::Finished;
+        }
     }
 }
 

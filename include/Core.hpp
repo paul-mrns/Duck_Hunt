@@ -17,8 +17,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
-#include "gameStates/Menu.hpp"
-#include "gameStates/Play.hpp"
+#include "game_states/Menu.hpp"
+#include "game_states/Play.hpp"
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGTH 1080

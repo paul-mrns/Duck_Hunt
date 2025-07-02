@@ -6,6 +6,12 @@
 
 #include "assets/MenuAssets.hpp"
 
+Assets::MenuAssets::MenuAssets(const std::vector<DuckHunt::PlayerScore> &highscores)
+{
+    logoAssets();
+    textAssets(highscores);
+}
+
 void Assets::MenuAssets::logoAssets()
 {
     _logoText.loadFromFile("./assets/menu/logo.jpg");
@@ -122,21 +128,21 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
 
     //gamemodes
     sf::Text game0;
-    game0.setString("GAME A \t 1 DUCK");
+    game0.setString("GAME A   1 DUCK");
     game0.setFont(_font);
-    game0.setPosition(700.0f, 550.0f);
+    game0.setPosition(720.0f, 560.0f);
     _games.push_back(game0);
 
     sf::Text game1;
-    game1.setString("GAME B \t 2 DUCKS");
+    game1.setString("GAME B   2 DUCKS");
     game1.setFont(_font);
-    game1.setPosition(700.0f, 600.0f);
+    game1.setPosition(720.0f, 610.0f);
     _games.push_back(game1);
 
     sf::Text game2;
-    game2.setString("GAME C \t CLAY SHOOTING");
+    game2.setString("GAME C   CLAY SHOOTING");
     game2.setFont(_font);
-    game2.setPosition(700.0f, 650.0f);
+    game2.setPosition(720.0f, 660.0f);
     _games.push_back(game2);
 
     _scores.setString("CLICK TO SEE SCORES");
@@ -165,8 +171,3 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
     createScores(highscores);
 }
 
-Assets::MenuAssets::MenuAssets(const std::vector<DuckHunt::PlayerScore> &highscores)
-{
-    logoAssets();
-    textAssets(highscores);
-}

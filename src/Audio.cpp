@@ -35,6 +35,9 @@ void DuckHunt::Audio::loadMusics()
 {
     createMusic(START_PATH);
     createMusic(INTRO_PATH);
+    createMusic(FLAP_PATH);
+    createMusic(FALL_PATH);
+    createMusic(CAUGHT_PATH);
 }
 
 DuckHunt::Audio::Audio()

@@ -21,7 +21,7 @@ namespace DuckHunt
         public:
             Menu(const std::vector<DuckHunt::PlayerScore>& highScores, DuckHunt::Audio& audio);
 
-            void handleInput(input &in);
+            void handleInput(input &in, sf::Vector2i mousePos);
             void update();
             void draw(sf::RenderWindow& window);
             bool isGameStartRequested() const;
@@ -39,5 +39,7 @@ namespace DuckHunt
             void updateSelection();
             void drawScores(sf::RenderWindow& window);
             gamemode getGamemode(int selection);
+            void handleClick(sf::Vector2i mousePos);
+            void handleHitboxes(sf::Vector2i mousePos);
     };
 }

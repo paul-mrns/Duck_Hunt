@@ -13,6 +13,15 @@
 #define INTRO_MUSIC 002
 #define INTRO_PATH "assets/audio/intro.mp3"
 
+#define FLAP_MUSIC 003
+#define FLAP_PATH "assets/audio/flap.mp3"
+
+#define FALL_MUSIC 004
+#define FALL_PATH "assets/audio/fall.mp3"
+
+#define CAUGHT_MUSIC 005
+#define CAUGHT_PATH "assets/audio/caught.mp3"
+
 #define SHOT_SOUND 001
 #define SHOT_PATH "assets/audio/shot.mp3"
 

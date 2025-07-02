@@ -29,6 +29,8 @@ namespace Assets {
             //visuals
             sf::Texture _backgroundText;
             sf::Sprite _backgroundSpr;
+            sf::Texture _grassText;
+            sf::Sprite _grassSpr;
             sf::Texture _spritesheet;
             sf::Sprite _bulletSpr;
             sf::Sprite _redDuckSpr;

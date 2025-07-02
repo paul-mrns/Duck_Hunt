@@ -4,14 +4,13 @@
 ** Menu.cpp
 */
 
-#include "gameStates/Menu.hpp"
+#include "game_states/Menu.hpp"
 #include "assets/MenuAssets.hpp"
 
 DuckHunt::Menu::Menu(const std::vector<PlayerScore>& highScores, Audio& audio)
     : _selectedOption(0), _startGame(false), _highScores(highScores), _audio(audio)
 {
     _assets = std::make_unique<Assets::MenuAssets>(highScores);
-    //_audio.play_music(START_MUSIC);
 }
 
 void DuckHunt::Menu::drawScores(sf::RenderWindow& window)
@@ -66,7 +65,37 @@ DuckHunt::gamemode DuckHunt::Menu::getGamemode(int selection)
     return unknownGamemode;
 }
 
-void DuckHunt::Menu::handleInput(input &in)
+void DuckHunt::Menu::handleClick(sf::Vector2i mousePos) 
+{
+    sf::Vector2f mouseF(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+    for (int i = 0; i < 3; ++i) {
+        if (_assets->_games[i].getGlobalBounds().contains(mouseF)) {
+            _gamemode = getGamemode(_selectedOption);
+            _startGame = true;
+            _audio.stop_music(START_MUSIC);
+            break;
+        }
+    }
+    if (_assets->_scores.getGlobalBounds().contains(mouseF))
+        _scoreboardActive = true;
+}
+
+void DuckHunt::Menu::handleHitboxes(sf::Vector2i mousePos)
+{
+    sf::Vector2f mouseF(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+     for (int i = 0; i < 3; ++i) {
+        if (_assets->_games[i].getGlobalBounds().contains(mouseF)) {
+            _selectedOption = i;
+            break;
+        }
+    }
+    if (_assets->_scores.getGlobalBounds().contains(mouseF))
+        _selectedOption = 3;
+}
+
+void DuckHunt::Menu::handleInput(input &in, sf::Vector2i mousePos)
 {
     if (in == enter) {
         if (_selectedOption == 3)
@@ -80,13 +109,15 @@ void DuckHunt::Menu::handleInput(input &in)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;
     else if (in == arrow_up)
         _selectedOption = (_selectedOption == 0) ? 3 : _selectedOption - 1;
-    else if (in == escape)
+    else if (in == escape) {
         if (_scoreboardActive)
             _scoreboardActive = false;
         else
             in = quit;
+    } else if (in == left_click)
+        handleClick(mousePos);
     else
-        return;
+        handleHitboxes(mousePos);
 }
 
 void DuckHunt::Menu::update()

@@ -15,7 +15,7 @@
 #include "Core.hpp"
 
 #define MENU_FONT_PATH "assets/fonts/PressStart2P-Regular.ttf"
-#define LOGO_WIDTH 700.0f
+#define LOGO_WIDTH 900.0f
 #define LOGO_HEIGHT 550.0f
 
 namespace DuckHunt {
@@ -27,12 +27,13 @@ namespace Assets
     class MenuAssets : public AAssets
     {
         public:
+            MenuAssets(const std::vector<DuckHunt::PlayerScore> &highscores);
+            ~MenuAssets() = default;
+            
             //logo
-            sf::Texture _logoText;
             sf::Sprite _logoSpr;
 
             //texts
-            sf::Font _font;
             std::vector<sf::Text> _games;
             sf::Text _scores;
             sf::Text _credits;
@@ -42,13 +43,15 @@ namespace Assets
             sf::Text _highscoreText;
             std::vector<sf::Text> _highScores;
             sf::RectangleShape _scoreboard;
+
+        private:
+            sf::Font _font;
+            sf::Texture _logoText;
+
             void createScoreboard();
             void createHeader();
             void createPodium(const std::vector<DuckHunt::PlayerScore> &highscores);
             void createScores(const std::vector<DuckHunt::PlayerScore> &highscores);
-
-            MenuAssets(const std::vector<DuckHunt::PlayerScore> &highscores);
-            ~MenuAssets() = default;
 
             void textAssets(const std::vector<DuckHunt::PlayerScore> &highscores);
             void logoAssets();

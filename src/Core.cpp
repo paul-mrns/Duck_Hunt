@@ -45,7 +45,7 @@ void DuckHunt::Core::menuHandler()
         _menu = std::make_unique<Menu>(_highScores, _audio);
         _audio.play_music(START_MUSIC, false);
     }
-    _menu->handleInput(_input);
+    _menu->handleInput(_input, sf::Mouse::getPosition(_window));
     if (_input != quit)
         _input = none;
     _menu->update();
@@ -62,7 +62,7 @@ void DuckHunt::Core::playHandler()
         _play = std::make_unique<Play>(_score, _audio);
         _audio.play_music(INTRO_MUSIC, false);
    }
-    _play->handleInput(_input);
+    _play->handleInput(_input, sf::Mouse::getPosition(_window));
     if (_input != quit)
         _input = none;
     _play->update();

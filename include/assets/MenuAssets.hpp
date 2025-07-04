@@ -6,17 +6,11 @@
 */
 
 #pragma once
-#include <string>
-#include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include "AAssets.hpp"
 #include "Core.hpp"
 
 #define MENU_FONT_PATH "assets/fonts/PressStart2P-Regular.ttf"
-#define LOGO_WIDTH 900.0f
-#define LOGO_HEIGHT 550.0f
+#define LOGO_WIDTH 900.f
+#define LOGO_HEIGHT 550.f
 
 namespace DuckHunt {
     struct PlayerScore;

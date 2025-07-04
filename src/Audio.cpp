@@ -6,16 +6,6 @@
 
 #include "Core.hpp"
 
-void DuckHunt::Audio::createSound(std::string path)
-{
-    _soundBuffers.emplace_back();
-    if (_soundBuffers.back().loadFromFile(path)) {
-        sf::Sound sound;
-        sound.setBuffer(_soundBuffers.back());
-        _sounds.push_back(sound);
-    }
-}
-
 void DuckHunt::Audio::createMusic(std::string path)
 {
     auto music = std::make_unique<sf::Music>();
@@ -28,7 +18,10 @@ void DuckHunt::Audio::createMusic(std::string path)
 
 void DuckHunt::Audio::loadSounds()
 {
-    createSound(SHOT_PATH);
+    _shotSoundBuffer.loadFromFile(SHOT_PATH);
+    _shotSound.setBuffer(_shotSoundBuffer);
+    _pauseSoundBuffer.loadFromFile(PAUSE_PATH);
+    _pauseSound.setBuffer(_pauseSoundBuffer);
 }
 
 void DuckHunt::Audio::loadMusics()
@@ -38,6 +31,7 @@ void DuckHunt::Audio::loadMusics()
     createMusic(FLAP_PATH);
     createMusic(FALL_PATH);
     createMusic(CAUGHT_PATH);
+    createMusic(LAUGH_PATH);
 }
 
 DuckHunt::Audio::Audio()
@@ -46,24 +40,43 @@ DuckHunt::Audio::Audio()
     loadMusics();
 }
 
-void DuckHunt::Audio::play_sound(int sound_id)
+void DuckHunt::Audio::playSound(int sound_id)
 {
-    if (sound_id > 0 && sound_id <= static_cast<int>(_sounds.size()))
-        _sounds[sound_id - 1].play();
+    if (sound_id == SHOT_SOUND)
+        _shotSound.play();
+    if (sound_id == PAUSE_SOUND)
+        _pauseSound.play();
 }
 
-void DuckHunt::Audio::play_music(int music_id, bool repeat)
+void DuckHunt::Audio::playMusic(int music_id, bool repeat)
 {
     for (auto& m : _musics)
         m->stop();
     if (music_id > 0 && music_id <= static_cast<int>(_musics.size())) {
         _musics[music_id - 1]->setLoop(repeat);
         _musics[music_id - 1]->play();
+        _currentMusicIndex = music_id -1;
     }
 }
 
-void DuckHunt::Audio::stop_music(int music_id)
+void DuckHunt::Audio::stopMusic(int music_id)
 {
     if (music_id > 0 && music_id <= static_cast<int>(_musics.size()))
         _musics[music_id - 1]->stop();
+}
+
+void DuckHunt::Audio::pauseCurrentMusic()
+{
+    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size())) {
+        if (_musics[_currentMusicIndex]->getStatus() == sf::SoundSource::Playing)
+            _musics[_currentMusicIndex]->pause();
+    }
+}
+
+void DuckHunt::Audio::resumeCurrentMusic()
+{
+    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size())) {
+        if (_musics[_currentMusicIndex]->getStatus() == sf::SoundSource::Paused)
+            _musics[_currentMusicIndex]->play();
+    }
 }

@@ -11,10 +11,12 @@
 #define SPRITE_WIDTH 77
 #define SPRITE_HEIGTH 77
 
-enum DuckColor { Red, Green, Blue };
+#define BLUE_DUCK 0
+#define BLACK_DUCK 1
+#define RED_DUCK 2
+
 enum DuckState { Flying, Hit, Falling, FlyAway, Caught };
 enum DuckFlight { Horizontal, Diagonal, Up };
-
 
 namespace Animation {
     class Duck : public AAnimation {
@@ -24,11 +26,14 @@ namespace Animation {
         void update(float dt);
         void setDirection(sf::Vector2f dir);
         void isHit();
+        void flyAway();
 
         DuckState getState() const;
-        bool isOffScreen(const sf::RenderWindow& window) const;
+        bool isOffScreen() const;
         bool isFalling() const;
+        void flyingAway() { return; };
         bool isCaught() const;
+        int getDuckScore(int round) const;
 
     private:
         void initFrames();
@@ -51,5 +56,8 @@ namespace Animation {
         float _speed;
         bool _isFlipped = false;
 
+        //falling 
+        float _fallElapsed = 0.f;
+        float _fallSpeed;
     };
 }

@@ -8,17 +8,19 @@
 #pragma once
 #include "AAnimation.hpp"
 
-
 namespace Animation {
     enum class DogState { Sniffing, Jump, Happy1, Happy2, Laughing, Finished };
+    enum class CatchPhase { Rising, Holding, Falling };
+    enum class LaughPhase { Rising, Falling };
     class Dog : public AAnimation {
         public:
             Dog(const sf::Texture& texture);
 
-            void happy1(sf::Vector2f pos);
+            void initHappy1(sf::Vector2f pos);
+            void initLaugh(sf::Vector2f pos);
             void update(float dt) override;
             bool isAnimationDone() const { return _state == DogState::Finished; }
-            void initFramesRects();
+            bool isFalling() const { return _state == DogState::Jump && _jumpPhase == 2; };
 
         private:
             DogState _state = DogState::Sniffing;
@@ -27,25 +29,30 @@ namespace Animation {
             float _totalElapsed = 0.f;
             float _speed = 0.15f;
             
+            void initFramesRects();
+
             //sniffing
             std::vector<sf::IntRect> _sniffFrames;
             std::vector<int> _sniffOrder = {0, 3, 2, 1, 1, 4};
 
             //jump
             std::vector<sf::IntRect> _jumpFrames;
-            std::vector<int> _jumpOrder  = {0, 1, 2, 2};
-            std::vector<float> _jumpHeights = { 0.f, -120.f, -160.f, 0.f};
-            std::vector<float> _jumpFrameDurations = {0.2f, 0.4f, 0.2f, 0.4f};
             sf::Vector2f _jumpStartPos;
-            float _jumpSpeed = 0.05f;
-            float _jumpTime = 0.f;
-            float _jumpDuration = 1.2f;
-            float _jumpDelay = 5.6f;
+            float _jumpDelay = 5.5f;
+            float _jumpTimer = 0.f;
+            int _jumpPhase = 0;
+            void jump(float dt);
 
-            //happy1
+            //Duck Catching
             sf::IntRect _happy1Frame;
-            float _riseSpeed = 100.f;
-            float _targetY = 600.f;
-            bool _rising = false;
+            float _catchTimer = 0.f;
+            CatchPhase _catchPhase = CatchPhase::Rising;
+            void happy1(float dt);
+            
+            //Dog Laughing
+            std::vector<sf::IntRect> _laughingFrames;
+            float _laughTimer = 0.f;
+            LaughPhase _laughPhase = LaughPhase::Rising;
+            void laugh(float dt);
     };
 }

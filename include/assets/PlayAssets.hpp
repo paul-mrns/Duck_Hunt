@@ -6,12 +6,7 @@
 */
 
 #pragma once
-#include <string>
-#include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include "AAssets.hpp"
+#include "Core.hpp"
 
 #define PLAY_FONT_PATH "assets/fonts/PressStart2P-Regular.ttf"
 #define WINDOW_WIDTH 1920
@@ -22,9 +17,6 @@ namespace Assets {
         public:
             PlayAssets(std::vector<int> values);
             ~PlayAssets() = default;
-
-            sf::Color _green{137,243,54};
-            sf::Color _blue{0, 204, 255};
 
             //visuals
             sf::Texture _backgroundText;
@@ -38,10 +30,14 @@ namespace Assets {
             std::vector<sf::Sprite> _bullets;
             std::vector<sf::Sprite> _redDucks;
             std::vector<sf::Sprite> _whiteDucks;
+            sf::Sprite _pauseSpr;
+            sf::Texture _pauseText;
+            sf::Sprite _flyAwaySpr;
+            sf::Texture _flyAwayText;
 
             //values background
             sf::RectangleShape _roundBg;
-            sf::RectangleShape _reloadBg;
+            sf::RectangleShape _greenRoundBg;
             sf::RectangleShape _ammoBg;
             sf::RectangleShape _hitBg;
             sf::RectangleShape _scoreBg;
@@ -49,31 +45,31 @@ namespace Assets {
             //texts
             sf::Font _font;
             sf::Text _roundText;
-            sf::Text _reloadText;
+            sf::Text _greenRoundText;
             sf::Text _ammoText;
             sf::Text _hitText;
             sf::Text _scoreText;
 
-            //values
-            int _round;
-            int _reload;
-            int _ammo;
-            int _hits;
-            int _score;
-
             //setters
             void setRound(int round);
-            void setReload(int reload);
             void setAmmo(int ammos);
             void setHits(int hits);
             void setScore(int score);
 
-            //init 
+        private:
+            int _round;
+            int _ammo;
+            int _hits;
+            int _score;
+            sf::Color _green{137,243,54};
+            sf::Color _blue{0, 204, 255};
+
             void visualAssets();
             void roundAssets();
-            void reloadAssets();
             void ammoAssets();
             void hitAssets();
             void scoreAssets();
+            void flyAwayAssets();
+            void pauseAssets();
     };
 }

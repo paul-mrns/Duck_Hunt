@@ -6,6 +6,7 @@
 
 #include "animation/Dog.hpp"
 #include "Core.hpp"
+#include <cmath>
 
 Animation::Dog::Dog(const sf::Texture& texture)
 {
@@ -13,14 +14,14 @@ Animation::Dog::Dog(const sf::Texture& texture)
     setTexture(texture);
     setFrames(_sniffFrames);
     setSpeed(0.2f);
-    setPosition({400.0f, 800.f});
+    setPosition({400.f, 800.f});
     _sprite.setScale(1.5f, 1.5f);
 }
 
 void Animation::Dog::initFramesRects()
 {
     _jumpFrames = {
-        {0, 110, 120, 110},
+        {000, 110, 120, 110},
         {120, 110, 120, 110},
         {240, 110, 120, 110},
     };
@@ -31,20 +32,137 @@ void Animation::Dog::initFramesRects()
         {360, 000, 120, 110},
         {480, 000, 120, 110}
     };
+    _laughingFrames = {
+        {388, 125, 68, 80},
+        {509, 125, 68, 80}
+    };
     _happy1Frame = {635, 0, 115, 100};
     _sniffOrder = {0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 3, 4};
-    _jumpOrder  = {0, 1, 2};
 }
 
-void Animation::Dog::happy1(sf::Vector2f pos)
+void Animation::Dog::initHappy1(sf::Vector2f pos)
 {
     _state = DogState::Happy1;
-    _rising = true;
+    _catchPhase = CatchPhase::Rising;
+    _catchTimer = 0.f;
     _elapsed = 0.f;
     _speed = 0.15f;
     _sprite.setTextureRect(_happy1Frame);
     _sprite.setPosition(pos);
-    _targetY = 400.0f;
+}
+
+void Animation::Dog::initLaugh(sf::Vector2f pos)
+{
+    _state = DogState::Laughing;
+    _laughPhase = LaughPhase::Rising;
+    _laughTimer = 0.f;
+    _elapsed = 0.f;
+    _speed = 0.15f;
+    setFrames(_laughingFrames);
+    _sprite.setPosition(pos);
+    _sprite.setScale(1.5f, 1.5f);
+}
+
+void Animation::Dog::happy1(float dt)
+{
+    sf::Vector2f pos = _sprite.getPosition();
+
+    _catchTimer += dt;
+    if (_catchPhase == CatchPhase::Rising) {
+        float progress = _catchTimer / 0.5f;
+        pos.y = 775.f - (125.f * std::min(progress, 1.f));
+        if (_catchTimer >= 0.5f) {
+            pos.y = 650.f;
+            _catchPhase = CatchPhase::Holding;
+            _catchTimer = 0.f;
+        }
+        _sprite.setPosition(pos);
+    }
+
+    if (_catchPhase == CatchPhase::Holding) {
+        if (_catchTimer >= 0.5f) {
+            _catchPhase = CatchPhase::Falling;
+            _catchTimer = 0.f;
+        }
+    }
+    
+    if (_catchPhase == CatchPhase::Falling) {
+        float progress = _catchTimer / 0.5f;
+        pos.y = 650.f + (125.f * std::min(progress, 1.f));
+        if (_catchTimer >= 0.5f) {
+            pos.y = 775.f;
+            _state = DogState::Finished;
+        }
+        _sprite.setPosition(pos);
+    }
+}
+
+void Animation::Dog::laugh(float dt)
+{
+    sf::Vector2f pos = _sprite.getPosition();
+
+    _laughTimer += dt;
+    if (_laughPhase == LaughPhase::Rising) {
+        float progress = _laughTimer / 1.5f;
+        int frameIndex = static_cast<int>(_laughTimer * 5) % 2;
+        _sprite.setTextureRect(_laughingFrames[frameIndex]);
+        pos.y = 800.f - (120.f * std::min(progress, 1.f));
+        _sprite.setPosition(pos);
+        if (_laughTimer >= 1.5f) {
+            pos.y = 680.f;
+            _sprite.setPosition(pos);
+            _laughPhase = LaughPhase::Falling;
+            _laughTimer = 0.f;
+        }
+    }
+
+    if (_laughPhase == LaughPhase::Falling) {
+        float progress = _laughTimer / 0.5f;
+        int frameIndex = static_cast<int>(_laughTimer * 6) % 2;
+        _sprite.setTextureRect(_laughingFrames[frameIndex]);
+        pos.y = 680.f + (120.f * std::min(progress, 1.f));
+        _sprite.setPosition(pos);
+        if (_laughTimer >= 1.f) {
+            pos.y = 800.f;
+            _sprite.setPosition(pos);
+            _state = DogState::Finished;
+        }
+    }
+}
+
+void Animation::Dog::jump(float dt)
+{
+    _jumpTimer += dt;
+    float prepDuration = 0.4f;  
+    float riseDuration = 0.7f;    
+    float fallDuration = 0.7f;
+
+    if (_jumpPhase == 0) {
+        _sprite.setTextureRect(_jumpFrames[0]);
+        if (_jumpTimer >= prepDuration) {
+            _jumpPhase = 1;
+            _jumpTimer = 0.f;
+        }
+    } else if (_jumpPhase == 1) {
+        _sprite.setTextureRect(_jumpFrames[1]);
+        float t = std::min(_jumpTimer / riseDuration, 1.f);
+        float dx = 100.f * t;
+        float dy = -280.f * std::sin(t * 1.5708f);
+        _sprite.setPosition(_jumpStartPos.x + dx, _jumpStartPos.y + dy);
+        if (_jumpTimer >= riseDuration) {
+            _jumpPhase = 2;
+            _jumpTimer = 0.f;
+            _jumpStartPos = _sprite.getPosition();
+        }
+    } else if (_jumpPhase == 2) {
+        _sprite.setTextureRect(_jumpFrames[2]);
+        float t = std::min(_jumpTimer / fallDuration, 1.f);
+        float dx = 100.f * t;
+        float dy = 280.f * std::pow(t, 2);
+        _sprite.setPosition(_jumpStartPos.x + dx, _jumpStartPos.y + dy);
+        if (_jumpTimer >= fallDuration)
+            _state = DogState::Finished;
+    }
 }
 
 void Animation::Dog::update(float dt)
@@ -65,46 +183,15 @@ void Animation::Dog::update(float dt)
             _state = DogState::Jump;
             _frameIndex = 0;
             _elapsed = 0.f;
-            _sprite.setTextureRect(_jumpFrames[_jumpOrder[0]]);
+            _sprite.setTextureRect(_jumpFrames[0]);
             _jumpStartPos = _sprite.getPosition();
             return;
         }
-    } else if (_state == DogState::Jump) {
-        _elapsed += dt;
-        _jumpTime += dt;
-
-        if (_frameIndex < _jumpFrameDurations.size() && _elapsed >= _jumpFrameDurations[_frameIndex]) {
-            _elapsed = 0.f;
-            _frameIndex++;
-
-            if (_frameIndex >= _jumpOrder.size()) {
-                _state = DogState::Finished;
-                return;
-            }
-
-            _sprite.setTextureRect(_jumpFrames[_jumpOrder[_frameIndex]]);
-        }
-        float yOffset = _jumpHeights[_frameIndex];
-        sf::Vector2f base = _jumpStartPos;
-        _sprite.setPosition(base.x, base.y + yOffset);
-    } else if (_state == DogState::Happy1) {
-        if (_rising) {
-            _elapsed += dt;
-            float riseDuration = 1.7f;
-            float totalRise = 250.f;
-            float step = (_riseSpeed = totalRise / riseDuration) * dt;
-            sf::Vector2f pos = _sprite.getPosition();
-            pos.y -= step;
-            _sprite.setPosition(pos);
-            if (_elapsed >= riseDuration) {
-                _rising = false;
-                _elapsed = 0.f;
-            }
-        } else {
-            _elapsed += dt;
-            if (_elapsed >= 1.5f)
-                _state = DogState::Finished;
-        }
-    }
+    } else if (_state == DogState::Jump)
+        jump(dt);
+    else if (_state == DogState::Happy1)
+        happy1(dt);
+    else if (_state == DogState::Laughing)
+        laugh(dt);
 }
 

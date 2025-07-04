@@ -11,12 +11,13 @@ Animation::Duck::Duck(const sf::Texture& texture)
     : _direction(1.f, -1.f),
       _state(DuckState::Flying)
 {
-    _speed = 160.0f;
+    _speed = 160.f;
     setTexture(texture);
     _color = rand() % 3;
     initFrames();
-    setSpeed(0.12f);
-    setPosition({1400, 900});
+    setSpeed(0.15f);
+    setPosition({static_cast<float>(rand() % 1920), 800});
+    _sprite.setScale(1.4f, 1.4f);
     flipIfNeeded();
 }
 
@@ -24,9 +25,9 @@ void Animation::Duck::initFrames()
 {
     _horizontalFlyFrames = getFlyFrames(_color, Horizontal);
     _diagonalFlyFrames = getFlyFrames(_color, Diagonal);
-    _diagonalFlyFrames = getFlyFrames (_color, Up);
-    _hitFrame = {_color * (SPRITE_WIDTH * 3 + 40), 455, SPRITE_WIDTH, SPRITE_HEIGTH};
-    _fallFrame = {(_color * (SPRITE_WIDTH * 3 + 40)) + SPRITE_WIDTH, 455, SPRITE_WIDTH, SPRITE_HEIGTH};
+    _flyAwayFrames = getFlyFrames (_color, Up);
+    _hitFrame = {260 * _color, 472, 67, 63};
+    _fallFrame = {94 + 260 * _color, 472, 39, 63};
     setFrames(_diagonalFlyFrames);
 }
 
@@ -34,18 +35,18 @@ std::vector<sf::IntRect> Animation::Duck::getFlyFrames(int color, DuckFlight ori
 {
     std::vector<sf::IntRect> vector;
     sf::IntRect Frame;
-    int xStart = color * (SPRITE_WIDTH * 3 + 40);
+    int xStart = color * 260;
     int yStart;
 
     if (orientation == Horizontal)
-        yStart = 230;
+        yStart = 235;
     else if (orientation == Diagonal)
-        yStart = 305;
+        yStart = 310;
     else
-        yStart = 380;
+        yStart = 390;
     for (int i = 0; i < 3; i++) {
-        Frame = {xStart, yStart, SPRITE_WIDTH, SPRITE_HEIGTH};
-        xStart += SPRITE_WIDTH;
+        Frame = {xStart, yStart, 68, 68};
+        xStart += 80;
         vector.emplace_back(Frame);
     }
     return vector;
@@ -67,7 +68,7 @@ void Animation::Duck::update(float dt)
             break;
 
         case DuckState::FlyAway:
-            _sprite.move(0.f, -_speed * 1.5f * dt);
+            _sprite.move(0.f, -_speed * 4.f * dt);
             break;
 
         case DuckState::Hit:
@@ -77,11 +78,18 @@ void Animation::Duck::update(float dt)
             break;
 
         case DuckState::Falling: {
-            _sprite.move(0.f, _speed * 2.5f * dt);
-            if (_sprite.getPosition().y >= 800.f)
-                _state = Caught;
+            _fallElapsed += dt;
+            float distance = _fallSpeed * dt;
+            _sprite.move(0.f, distance);
+            int spin = static_cast<int>(_fallElapsed * 10) % 2;
+            _sprite.setScale(spin == 0 ? 1.4f : -1.4f, 1.4f);
+            if (_fallElapsed >= 1.5f) {
+                _sprite.setPosition(_sprite.getPosition().x, 800.f);
+                _state = DuckState::Caught;
+            }
             break;
         }
+
 
         case DuckState::Caught: {
             sf::Vector2f pos = _sprite.getPosition();
@@ -104,19 +112,14 @@ void Animation::Duck::setDirection(sf::Vector2f dir)
     flipIfNeeded();
 }
 
-void Animation::Duck::setFlyAwayFrames()
-{
-    setFrames(_flyAwayFrames);
-    setSpeed(0.15f);
-    _state = DuckState::FlyAway;
-    _direction = {0.f, -1.f};
-}
-
 void Animation::Duck::setFallFrames()
 {
     _sprite.setTextureRect(_fallFrame);
     _state = DuckState::Falling;
     setSpeed(0.f);
+    float startY = _sprite.getPosition().y;
+    _fallElapsed = 0.f;
+    _fallSpeed = ((800.f - startY) / 1.5f) + 100;
 }
 
 void Animation::Duck::isHit()
@@ -125,6 +128,16 @@ void Animation::Duck::isHit()
         _sprite.setTextureRect(_hitFrame);
         _state = DuckState::Hit;
         _hitClock.restart();
+    }
+}
+
+void Animation::Duck::flyAway()
+{
+    if (_state == DuckState::Flying) {
+        setFrames(_flyAwayFrames);
+        setSpeed(0.10f);
+        _state = DuckState::FlyAway;
+        _direction = {0.f, -1.f};
     }
 }
 
@@ -138,12 +151,34 @@ DuckState Animation::Duck::getState() const
     return _state;
 }
 
-bool Animation::Duck::isOffScreen(const sf::RenderWindow& window) const
+int Animation::Duck::getDuckScore(int round) const
 {
-    auto b = _sprite.getGlobalBounds();
-    auto s = window.getSize();
-    return b.top > s.y || b.left + b.width < 0 || b.left > s.x;
+    int baseScore = 0;
+    int roundBonus = 0;
+
+    switch (_color) {
+        case BLACK_DUCK: baseScore = 500; break;
+        case BLUE_DUCK:  baseScore = 1000; break;
+        case RED_DUCK:   baseScore = 1500; break;
+        default:         baseScore = 500; break;
+    }
+    if (round >= 6 && round <= 10)
+        roundBonus = baseScore * 0.6f;
+    else if (round >= 11)
+        roundBonus = baseScore;
+    return baseScore + roundBonus;
 }
+
+bool Animation::Duck::isOffScreen() const
+{
+    const sf::FloatRect bounds = _sprite.getGlobalBounds();
+
+    return ( 
+        bounds.top + bounds.height < 0 || bounds.left + bounds.width < 0 ||
+        bounds.top > WINDOW_HEIGHT || bounds.left > WINDOW_WIDTH
+    );
+}
+
 
 bool Animation::Duck::isFalling() const
 {
@@ -153,10 +188,10 @@ bool Animation::Duck::isFalling() const
 void Animation::Duck::flipIfNeeded()
 {
     if (_direction.x < 0.f && !_isFlipped) {
-        _sprite.setScale(-1.f, 1.f);
+        _sprite.setScale(-1.4f, 1.4f);
         _isFlipped = true;
     } else if (_direction.x > 0.f && _isFlipped) {
-        _sprite.setScale(1.f, 1.f);
+        _sprite.setScale(1.4f, 1.4f);
         _isFlipped = false;
     }
 }

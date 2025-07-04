@@ -73,7 +73,7 @@ void DuckHunt::Menu::handleClick(sf::Vector2i mousePos)
         if (_assets->_games[i].getGlobalBounds().contains(mouseF)) {
             _gamemode = getGamemode(_selectedOption);
             _startGame = true;
-            _audio.stop_music(START_MUSIC);
+            _audio.stopMusic(START_MUSIC);
             break;
         }
     }
@@ -103,7 +103,7 @@ void DuckHunt::Menu::handleInput(input &in, sf::Vector2i mousePos)
         else {
             _gamemode = getGamemode(_selectedOption);
             _startGame = true;
-            _audio.stop_music(START_MUSIC);
+            _audio.stopMusic(START_MUSIC);
         }
     } else if (in == arrow_down)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;

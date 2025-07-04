@@ -17,11 +17,18 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
+#include "Types.hpp"
+#include "Audio.hpp"
+#include "assets/AAssets.hpp"
+#include "assets/MenuAssets.hpp"
+#include "assets/PlayAssets.hpp"
+#include "animation/Dog.hpp"
+#include "animation/Duck.hpp"
 #include "game_states/Menu.hpp"
 #include "game_states/Play.hpp"
 
 #define WINDOW_WIDTH 1920
-#define WINDOW_HEIGTH 1080
+#define WINDOW_HEIGHT 1080
 #define ERROR 84
 #define MAX_HIGHSCORE_ENTRIES 10
 #define HIGHSCORE_FILE ".secrets/scores.txt"

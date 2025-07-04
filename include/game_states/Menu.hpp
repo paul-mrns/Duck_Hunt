@@ -5,9 +5,7 @@
 */
 
 #pragma once
-#include "../assets/MenuAssets.hpp"
-#include "Types.hpp"
-#include "Audio.hpp"
+#include "Core.hpp"
 
 namespace Assets
 {

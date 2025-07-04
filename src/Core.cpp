@@ -5,12 +5,11 @@
 */
 
 #include "Core.hpp"
-#include <unistd.h>
 
 DuckHunt::Core::Core(std::string &username)
 {
     _username = username;
-    _window.create(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGTH}), "Duck_Hunt.exe");
+    _window.create(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Duck_Hunt.exe");
     _window.setFramerateLimit(60);
     _window.setKeyRepeatEnabled(false);
     _state = menu;
@@ -43,7 +42,7 @@ void DuckHunt::Core::menuHandler()
 {
     if (!_menu) {
         _menu = std::make_unique<Menu>(_highScores, _audio);
-        _audio.play_music(START_MUSIC, false);
+        _audio.playMusic(START_MUSIC, false);
     }
     _menu->handleInput(_input, sf::Mouse::getPosition(_window));
     if (_input != quit)
@@ -60,7 +59,7 @@ void DuckHunt::Core::playHandler()
 {
    if (!_play) {
         _play = std::make_unique<Play>(_score, _audio);
-        _audio.play_music(INTRO_MUSIC, false);
+        _audio.playMusic(INTRO_MUSIC, false);
    }
     _play->handleInput(_input, sf::Mouse::getPosition(_window));
     if (_input != quit)

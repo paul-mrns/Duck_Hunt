@@ -5,12 +5,7 @@
 */
 
 #pragma once
-
-#include "../assets/PlayAssets.hpp"
-#include "Types.hpp"
-#include "Audio.hpp"
-#include "../animation/Dog.hpp"
-#include "../animation/Duck.hpp"
+#include "Core.hpp"
 
 namespace DuckHunt
 {
@@ -31,39 +26,48 @@ namespace DuckHunt
         DuckHunt::Audio& _audio;
         sf::Clock _clock;
 
+        bool _pause = false;
         int _round = 1;
-        int _reload = 1;
         int _ammo = 3;
-        int _duckCount = 0;
         int& _score;
         bool _gameOver = false;
         bool _gameHasStarted = false;
+
+        //current duck
+        int _duckIndex = 0;
+        std::vector<hitResults> _duckHits;
+        float _currentDuckBlinkTimer = 0.f;
+        bool _currentDuckBlinking = true;
 
         void playLoop(float dt);
 
         //drawing
         void drawAmmo(sf::RenderWindow& window, std::vector<sf::Sprite> bullets);
         void drawHits(sf::RenderWindow& window, std::vector<sf::Sprite> redDucks, std::vector<sf::Sprite> whiteDucks);
-        
+        void drawIntro(sf::RenderWindow& window);
+        void drawHUD(sf::RenderWindow& window);
+
         // Game mechanics
         void shoot(sf::Vector2i mousePos);
         void reload();
-        void reloadUsed();
 
         // Duck
         std::unique_ptr<Animation::Duck> _duck;
         bool _duckActive = false;
-        int _duckIndex = 0;
         sf::FloatRect _duckBounds;
-        std::vector<hitResults> _duckHits;
+        bool _flyAway = false;
         void spawnDuck();
         void duckHasBeenHit();
+        void duckHasBeenCaught();
+        bool isDuckHit();
 
         //Dog
         std::unique_ptr<Animation::Dog> _dog;
         bool _dogCatching = false;
+        bool _dogLaughing = false;
         bool _dogHasAppeared = false;
         void dogCatchingDuck(float dt);
+        void dogLaughing();
 
         // Shooting
         sf::RectangleShape _blackScreen;

@@ -24,20 +24,20 @@ void Assets::MenuAssets::createScoreboard()
 {
     sf::Color orange(255, 128, 13);
 
-    _scoreboard.setPosition(600.0f, 100.0f);
-    _scoreboard.setSize((sf::Vector2f){720.0f, 780.0f});
+    _scoreboard.setPosition(600.f, 100.f);
+    _scoreboard.setSize((sf::Vector2f){720.f, 780.f});
     _scoreboard.setFillColor(sf::Color::Black);
-    _scoreboard.setOutlineThickness(5.0f);
+    _scoreboard.setOutlineThickness(5.f);
     _scoreboard.setOutlineColor(orange);
 
     _highscoreText.setFont(_font);
     _highscoreText.setString("HIGH SCORES");
     _highscoreText.setFillColor(orange);
     _highscoreText.setCharacterSize(40);
-    _highscoreText.setOutlineThickness(2.0f);
+    _highscoreText.setOutlineThickness(2.f);
     _highscoreText.setOutlineColor(sf::Color::Red);
     sf::FloatRect highscoreBounds = _highscoreText.getLocalBounds();
-    _highscoreText.setPosition((WINDOW_WIDTH - highscoreBounds.width) / 2.0f - highscoreBounds.left, 150.0f);
+    _highscoreText.setPosition((WINDOW_WIDTH - highscoreBounds.width) / 2.f - highscoreBounds.left, 150.f);
 }
 
 void Assets::MenuAssets::createHeader()
@@ -47,9 +47,9 @@ void Assets::MenuAssets::createHeader()
     header.setFont(_font);
     header.setString("RANK   SCORE   NAME");
     header.setFillColor(sf::Color::White);
-    header.setOutlineThickness(2.0f);
+    header.setOutlineThickness(2.f);
     header.setOutlineColor(sf::Color::Magenta);
-    header.setPosition(650.0f, 275.0f);
+    header.setPosition(650.f, 275.f);
     _highScores.push_back(header);
 }
 
@@ -89,7 +89,7 @@ void Assets::MenuAssets::createPodium(const std::vector<DuckHunt::PlayerScore> &
         sf::Text scoreline;
         scoreline.setFont(_font);
         scoreline.setFillColor(colorForRanks(i + 1));
-        scoreline.setPosition(650.0f, y);
+        scoreline.setPosition(650.f, y);
         y += 50;
         line = alignString(highscores[i].score);
         scoreline.setString(ranks[i] + "    " + line + "  " + highscores[i].username);
@@ -110,7 +110,7 @@ void Assets::MenuAssets::createScores(const std::vector<DuckHunt::PlayerScore> &
         std::string rank;
         scoreline.setFont(_font);
         scoreline.setFillColor(colorForRanks(i + 1));
-        scoreline.setPosition(650.0f, y);
+        scoreline.setPosition(650.f, y);
         y += 50;
         rank = std::to_string(i + 1) + "th";
         line = alignString(highscores[i].score);
@@ -130,19 +130,19 @@ void Assets::MenuAssets::textAssets(const std::vector<DuckHunt::PlayerScore> &hi
     sf::Text game0;
     game0.setString("GAME A   1 DUCK");
     game0.setFont(_font);
-    game0.setPosition(720.0f, 560.0f);
+    game0.setPosition(720.f, 560.f);
     _games.push_back(game0);
 
     sf::Text game1;
     game1.setString("GAME B   2 DUCKS");
     game1.setFont(_font);
-    game1.setPosition(720.0f, 610.0f);
+    game1.setPosition(720.f, 610.f);
     _games.push_back(game1);
 
     sf::Text game2;
     game2.setString("GAME C   CLAY SHOOTING");
     game2.setFont(_font);
-    game2.setPosition(720.0f, 660.0f);
+    game2.setPosition(720.f, 660.f);
     _games.push_back(game2);
 
     _scores.setString("CLICK TO SEE SCORES");

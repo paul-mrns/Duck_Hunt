@@ -7,10 +7,6 @@
 
 #pragma once
 #include "IAssets.hpp"
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
 
 namespace Assets
 {
@@ -29,5 +25,27 @@ namespace Assets
                 scaleFactors.y = height / static_cast<float>(textureSize.y);
                 sprite.setScale(scaleFactors);
             }
+
+            void centerSpriteAxisX(sf::Sprite& sprite)
+            {
+                sf::FloatRect bounds = sprite.getLocalBounds();
+
+                sprite.setOrigin(bounds.width / 2.f, sprite.getOrigin().y);
+                sprite.setPosition(1920.f / 2.f, sprite.getPosition().y);
+            }
+
+            void centerSpriteAxisY(sf::Sprite& sprite)
+            {
+                sf::FloatRect bounds = sprite.getLocalBounds();
+
+                sprite.setOrigin(sprite.getOrigin().x, bounds.height / 2.f);
+                sprite.setPosition(sprite.getPosition().x, 1080.f / 2.f);
+            }
+
+            void centerSprite(sf::Sprite& sprite) {
+                centerSpriteAxisX(sprite);
+                centerSpriteAxisY(sprite);
+            }
+
     };
 }

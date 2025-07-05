@@ -105,16 +105,16 @@ void DuckHunt::Menu::handleInput(input &in, sf::Vector2i mousePos)
             _startGame = true;
             _audio.stopMusic(START_MUSIC);
         }
-    } else if (in == arrow_down)
+    } else if (in == arrowDown)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;
-    else if (in == arrow_up)
+    else if (in == arrowUp)
         _selectedOption = (_selectedOption == 0) ? 3 : _selectedOption - 1;
     else if (in == escape) {
         if (_scoreboardActive)
             _scoreboardActive = false;
         else
             in = quit;
-    } else if (in == left_click)
+    } else if (in == leftClick)
         handleClick(mousePos);
     else
         handleHitboxes(mousePos);

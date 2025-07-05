@@ -9,15 +9,17 @@
 #include "AAnimation.hpp"
 
 namespace Animation {
-    enum class DogState { Sniffing, Jump, Happy1, Happy2, Laughing, Finished };
+    enum class DogState { Sniffing, Jump, Happy1, Happy2, Laughing, GoLaughing, Finished };
     enum class CatchPhase { Rising, Holding, Falling };
-    enum class LaughPhase { Rising, Falling };
+    enum class LaughPhase { Rising, Standing, Falling };
+    enum class GoLaughPhase { Waiting, Rising, Standing };
     class Dog : public AAnimation {
         public:
             Dog(const sf::Texture& texture);
 
             void initHappy1(sf::Vector2f pos);
             void initLaugh(sf::Vector2f pos);
+            void initGameoverLaugh(sf::Vector2f pos);
             void update(float dt) override;
             bool isAnimationDone() const { return _state == DogState::Finished; }
             bool isFalling() const { return _state == DogState::Jump && _jumpPhase == 2; };
@@ -54,5 +56,10 @@ namespace Animation {
             float _laughTimer = 0.f;
             LaughPhase _laughPhase = LaughPhase::Rising;
             void laugh(float dt);
+
+            //Dog gameover Laughing
+            float _goLaughTimer = 0.f;
+            GoLaughPhase _goLaughPhase = GoLaughPhase::Waiting;
+            void gameoverLaugh(float dt);
     };
 }

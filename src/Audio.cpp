@@ -22,6 +22,8 @@ void DuckHunt::Audio::loadSounds()
     _shotSound.setBuffer(_shotSoundBuffer);
     _pauseSoundBuffer.loadFromFile(PAUSE_PATH);
     _pauseSound.setBuffer(_pauseSoundBuffer);
+    _pointsSoundBuffer.loadFromFile(POINTS_PATH);
+    _pointsSound.setBuffer(_pointsSoundBuffer);
 }
 
 void DuckHunt::Audio::loadMusics()
@@ -32,6 +34,7 @@ void DuckHunt::Audio::loadMusics()
     createMusic(FALL_PATH);
     createMusic(CAUGHT_PATH);
     createMusic(LAUGH_PATH);
+    createMusic(GAMEOVER_PATH);
 }
 
 DuckHunt::Audio::Audio()
@@ -40,29 +43,31 @@ DuckHunt::Audio::Audio()
     loadMusics();
 }
 
-void DuckHunt::Audio::playSound(int sound_id)
+void DuckHunt::Audio::playSound(int soundId)
 {
-    if (sound_id == SHOT_SOUND)
+    if (soundId == SHOT_SOUND)
         _shotSound.play();
-    if (sound_id == PAUSE_SOUND)
+    if (soundId == PAUSE_SOUND)
         _pauseSound.play();
+    if (soundId == POINTS_SOUND)
+        _pointsSound.play();
 }
 
-void DuckHunt::Audio::playMusic(int music_id, bool repeat)
+void DuckHunt::Audio::playMusic(int musicId, bool repeat)
 {
     for (auto& m : _musics)
         m->stop();
-    if (music_id > 0 && music_id <= static_cast<int>(_musics.size())) {
-        _musics[music_id - 1]->setLoop(repeat);
-        _musics[music_id - 1]->play();
-        _currentMusicIndex = music_id -1;
+    if (musicId > 0 && musicId <= static_cast<int>(_musics.size())) {
+        _musics[musicId - 1]->setLoop(repeat);
+        _musics[musicId - 1]->play();
+        _currentMusicIndex = musicId -1;
     }
 }
 
-void DuckHunt::Audio::stopMusic(int music_id)
+void DuckHunt::Audio::stopMusic(int musicId)
 {
-    if (music_id > 0 && music_id <= static_cast<int>(_musics.size()))
-        _musics[music_id - 1]->stop();
+    if (musicId > 0 && musicId <= static_cast<int>(_musics.size()))
+        _musics[musicId - 1]->stop();
 }
 
 void DuckHunt::Audio::pauseCurrentMusic()

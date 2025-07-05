@@ -11,9 +11,9 @@ static bool compareScore(const DuckHunt::PlayerScore& a, const DuckHunt::PlayerS
     return a.score > b.score;
 }
 
-void DuckHunt::Core::loadHighScores(const std::string& filename)
+void DuckHunt::Core::loadHighScores()
 {
-    std::ifstream file(filename);
+    std::ifstream file(HIGHSCORE_FILE);
     std::string line;
 
     if (!file.is_open()) {
@@ -37,4 +37,34 @@ void DuckHunt::Core::loadHighScores(const std::string& filename)
     if (_highScores.empty())
         _highScores.push_back({"", 0});
     file.close();
+}
+
+void DuckHunt::Core::updateScoresList()
+{
+    std::ofstream outFile(HIGHSCORE_FILE);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Failed to write high score file" << std::endl;
+        return;
+    }
+    for (const auto& entry : _highScores)
+        outFile << entry.username << " : " << entry.score << "\n";
+    outFile.close();
+}
+
+void DuckHunt::Core::saveScore()
+{
+    bool existingScore = false;
+
+    for (auto& currentScore : _highScores) {
+        if (currentScore.username == _username && _score > currentScore.score) {
+            currentScore.score = _score;
+            existingScore = true;
+            break;
+        }
+    }
+    if (!existingScore)
+        _highScores.push_back({_username, _score});
+    std::sort(_highScores.begin(), _highScores.end(), compareScore);
+    updateScoresList();
 }

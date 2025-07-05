@@ -22,8 +22,8 @@ void DuckHunt::Core::handleInput(sf::Event event)
         return;
     if (event.type == sf::Event::KeyPressed) {
         switch (event.key.code) {
-            case sf::Keyboard::Down: _input = arrow_down; break;
-            case sf::Keyboard::Up: _input = arrow_up; break;
+            case sf::Keyboard::Down: _input = arrowDown; break;
+            case sf::Keyboard::Up: _input = arrowUp; break;
             case sf::Keyboard::Enter: _input = enter; break;
             case sf::Keyboard::Escape: _input = escape; break;
             case sf::Keyboard::C:
@@ -35,7 +35,7 @@ void DuckHunt::Core::handleInput(sf::Event event)
     }
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Left)
-        _input = left_click;
+        _input = leftClick;
 }
 
 void DuckHunt::Core::menuHandler()
@@ -52,6 +52,8 @@ void DuckHunt::Core::menuHandler()
     if (_menu->isGameStartRequested()) {
         _gamemode = _menu->gamemodeChosen();
         _state = play;
+        _menu.reset();
+        return;
     }
 }
 
@@ -66,8 +68,13 @@ void DuckHunt::Core::playHandler()
         _input = none;
     _play->update();
     _play->draw(_window);
-    if (_play->isGameOver() == true)
-        _state = game_end;
+    if (_play->isGameOver() == true) {
+        _state = menu;
+        _play.reset();
+        saveScore();
+        _score = 0;
+        return;
+    }
 }
 
 void DuckHunt::Core::stateHandler()
@@ -82,7 +89,7 @@ void DuckHunt::Core::gameLoop()
 {
     sf::Event event;
 
-    loadHighScores(HIGHSCORE_FILE);
+    loadHighScores();
     while(_window.isOpen()) {
         while(_window.pollEvent(event))
             handleInput(event);
@@ -92,5 +99,4 @@ void DuckHunt::Core::gameLoop()
         stateHandler();
         _window.display();
     }
-    //save high score
 }

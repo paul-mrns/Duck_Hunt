@@ -45,7 +45,7 @@ namespace DuckHunt
         ~Core() = default;
 
     private:
-        game_state _state;
+        gameState _state;
         std::string _username;
         sf::RenderWindow _window;
         input _input;
@@ -59,8 +59,11 @@ namespace DuckHunt
         // Score
         int _score = 0;
         std::vector<PlayerScore> _highScores;
+        void loadHighScores();
+        void saveScore();
+        void updateScoresList();
 
-        void loadHighScores(const std::string& filename);
+        //game logic
         void gameLoop();
         void handleInput(sf::Event event);
         

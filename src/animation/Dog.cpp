@@ -63,6 +63,18 @@ void Animation::Dog::initLaugh(sf::Vector2f pos)
     _sprite.setScale(1.5f, 1.5f);
 }
 
+void Animation::Dog::initGameoverLaugh(sf::Vector2f pos)
+{
+    _state = DogState::GoLaughing;
+    _goLaughPhase = GoLaughPhase::Waiting;
+    _laughTimer = 0.f;
+    _elapsed = 0.f;
+    _speed = 0.15f;
+    setFrames(_laughingFrames);
+    _sprite.setPosition(pos);
+    _sprite.setScale(1.5f, 1.5f);
+}
+
 void Animation::Dog::happy1(float dt)
 {
     sf::Vector2f pos = _sprite.getPosition();
@@ -70,9 +82,9 @@ void Animation::Dog::happy1(float dt)
     _catchTimer += dt;
     if (_catchPhase == CatchPhase::Rising) {
         float progress = _catchTimer / 0.5f;
-        pos.y = 775.f - (125.f * std::min(progress, 1.f));
+        pos.y = 775.f - (120.f * std::min(progress, 1.f));
         if (_catchTimer >= 0.5f) {
-            pos.y = 650.f;
+            pos.y = 655.f;
             _catchPhase = CatchPhase::Holding;
             _catchTimer = 0.f;
         }
@@ -88,7 +100,7 @@ void Animation::Dog::happy1(float dt)
     
     if (_catchPhase == CatchPhase::Falling) {
         float progress = _catchTimer / 0.5f;
-        pos.y = 650.f + (125.f * std::min(progress, 1.f));
+        pos.y = 655.f + (120.f * std::min(progress, 1.f));
         if (_catchTimer >= 0.5f) {
             pos.y = 775.f;
             _state = DogState::Finished;
@@ -102,15 +114,22 @@ void Animation::Dog::laugh(float dt)
     sf::Vector2f pos = _sprite.getPosition();
 
     _laughTimer += dt;
+    int frameIndex = static_cast<int>(_laughTimer * 17) % 2;
+    _sprite.setTextureRect(_laughingFrames[frameIndex]);
     if (_laughPhase == LaughPhase::Rising) {
-        float progress = _laughTimer / 1.5f;
-        int frameIndex = static_cast<int>(_laughTimer * 5) % 2;
-        _sprite.setTextureRect(_laughingFrames[frameIndex]);
-        pos.y = 800.f - (120.f * std::min(progress, 1.f));
+        float progress = _laughTimer / 0.5f;
+        pos.y = 800.f - (105.f * std::min(progress, 1.f));
         _sprite.setPosition(pos);
-        if (_laughTimer >= 1.5f) {
-            pos.y = 680.f;
+        if (_laughTimer >= 0.5f) {
+            pos.y = 695.f;
             _sprite.setPosition(pos);
+            _laughPhase = LaughPhase::Standing;
+            _laughTimer = 0.f;
+        }
+    }
+
+    if (_laughPhase == LaughPhase::Standing) {
+        if (_laughTimer >= 1.f) {
             _laughPhase = LaughPhase::Falling;
             _laughTimer = 0.f;
         }
@@ -118,16 +137,48 @@ void Animation::Dog::laugh(float dt)
 
     if (_laughPhase == LaughPhase::Falling) {
         float progress = _laughTimer / 0.5f;
-        int frameIndex = static_cast<int>(_laughTimer * 6) % 2;
-        _sprite.setTextureRect(_laughingFrames[frameIndex]);
-        pos.y = 680.f + (120.f * std::min(progress, 1.f));
+        pos.y = 695.f + (125.f * std::min(progress, 1.f));
         _sprite.setPosition(pos);
-        if (_laughTimer >= 1.f) {
-            pos.y = 800.f;
+        if (_laughTimer >= 1.0f) {
+            pos.y = 810.f;
             _sprite.setPosition(pos);
             _state = DogState::Finished;
         }
     }
+}
+
+void Animation::Dog::gameoverLaugh(float dt)
+{
+    sf::Vector2f pos = _sprite.getPosition();
+
+    _goLaughTimer += dt;
+    int frameIndex = static_cast<int>(_goLaughTimer * 13) % 2;
+    _sprite.setTextureRect(_laughingFrames[frameIndex]);
+    
+    if (_goLaughPhase == GoLaughPhase::Waiting) {
+        if (_goLaughTimer >= 1.5f) {
+            _goLaughPhase = GoLaughPhase::Rising;
+            _goLaughTimer = 0.f;
+        }
+    }
+    
+    if (_goLaughPhase == GoLaughPhase::Rising) {
+        float progress = _goLaughTimer / 0.5f;
+        pos.y = 800.f - (105.f * std::min(progress, 1.f));
+        _sprite.setPosition(pos);
+        if (_goLaughTimer >= 0.5f) {
+            pos.y = 695.f;
+            _sprite.setPosition(pos);
+            _goLaughPhase = GoLaughPhase::Standing;
+            _goLaughTimer = 0.f;
+        }
+    }
+
+    if (_goLaughPhase == GoLaughPhase::Standing)
+        if (_goLaughTimer >= 3.25f) {
+            _goLaughTimer = 0.f;
+            _state = DogState::Finished;
+        }
 }
 
 void Animation::Dog::jump(float dt)
@@ -193,5 +244,7 @@ void Animation::Dog::update(float dt)
         happy1(dt);
     else if (_state == DogState::Laughing)
         laugh(dt);
+    else if (_state == DogState::GoLaughing)
+        gameoverLaugh(dt);
 }
 

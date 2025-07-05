@@ -26,6 +26,8 @@ namespace DuckHunt
         DuckHunt::Audio& _audio;
         sf::Clock _clock;
 
+        void playLoop(float dt);
+
         bool _pause = false;
         int _round = 1;
         int _ammo = 3;
@@ -38,8 +40,6 @@ namespace DuckHunt
         std::vector<hitResults> _duckHits;
         float _currentDuckBlinkTimer = 0.f;
         bool _currentDuckBlinking = true;
-
-        void playLoop(float dt);
 
         //drawing
         void drawAmmo(sf::RenderWindow& window, std::vector<sf::Sprite> bullets);
@@ -76,5 +76,25 @@ namespace DuckHunt
         sf::Clock _flashClock;
         sf::Vector2f _lastMouseShot;
         void handleHit(sf::Vector2i mousePos);
+
+        // points counting
+        bool _pointsCounting = false;
+        float _pointsCountingTimer = 0.f;
+        size_t _pointsCountingIndex = 0;
+        void pointsCountingSequence(float dt);
+
+        // gameOver
+        bool _gameOverSequence = false;
+        bool _gameOverAnimationStarted = false;
+        void gameOverLaugh(float dt);
+        float _gameOverTimer = 0.f;
+
+        //end round
+        bool _endGame = false;
+        bool _newRound = false;
+        bool isPerfectRound();
+        bool canStartNewRound();
+        void startNewRound();
+
     };
 }

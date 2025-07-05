@@ -23,14 +23,15 @@ namespace DuckHunt
             void update();
             void draw(sf::RenderWindow& window);
             bool isGameStartRequested() const;
+            void setStartGame(bool isGameStarted) { _startGame = isGameStarted; };
             DuckHunt::gamemode gamemodeChosen() const;
 
         private:
             std::unique_ptr<Assets::MenuAssets> _assets;
             int _selectedOption;
-            bool _startGame;
+            bool _startGame = false;
             const std::vector<DuckHunt::PlayerScore>& _highScores;
-            bool _scoreboardActive;
+            bool _scoreboardActive = false;
             gamemode _gamemode;
             DuckHunt::Audio& _audio;
 

@@ -47,5 +47,27 @@ namespace Assets
                 centerSpriteAxisY(sprite);
             }
 
+            void centerTextAxisX(sf::Text &text)
+            {
+                sf::FloatRect bounds = text.getLocalBounds();
+
+                text.setOrigin(bounds.width / 2.f, text.getOrigin().y);
+                text.setPosition(1920.f / 2.f, text.getPosition().y);
+            }
+
+            void centerTextAxisY(sf::Text& text)
+            {
+                sf::FloatRect bounds = text.getLocalBounds();
+
+                text.setOrigin(text.getOrigin().x, bounds.height / 2.f);
+                text.setPosition(text.getPosition().x, 1080.f / 2.f);
+            }
+
+            void centerText(sf::Text& text) {
+                centerTextAxisX(text);
+                centerTextAxisY(text);
+            }
+
+
     };
 }

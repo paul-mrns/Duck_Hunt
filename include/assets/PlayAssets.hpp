@@ -34,6 +34,8 @@ namespace Assets {
             sf::Texture _pauseText;
             sf::Sprite _flyAwaySpr;
             sf::Texture _flyAwayText;
+            sf::Sprite _gameoverBgSpr;
+            sf::Texture _gameoverBgText;
 
             //values background
             sf::RectangleShape _roundBg;
@@ -41,7 +43,8 @@ namespace Assets {
             sf::RectangleShape _ammoBg;
             sf::RectangleShape _hitBg;
             sf::RectangleShape _scoreBg;
-
+            sf::RectangleShape _perfectRoundBg;
+ 
             //texts
             sf::Font _font;
             sf::Text _roundText;
@@ -49,19 +52,28 @@ namespace Assets {
             sf::Text _ammoText;
             sf::Text _hitText;
             sf::Text _scoreText;
+            sf::Text _hitScoreText;
+            sf::Text _perfectRoundText;
+            sf::Text _perfectRoundScoreText;
+            sf::Text _requiredBar;
+            sf::Text _gameoverText;
 
             //setters
             void setRound(int round);
             void setAmmo(int ammos);
             void setHits(int hits);
             void setScore(int score);
+            void setHitScore(int hitScore, sf::Vector2f pos);
+            void setPerfectRoundScore(int perfectRoundScore);
 
         private:
             int _round;
             int _ammo;
             int _hits;
             int _score;
-            sf::Color _green{137,243,54};
+            int _hitScore;
+            int _perfectRoundScore;
+            sf::Color _green{137, 243, 54};
             sf::Color _blue{0, 204, 255};
 
             void visualAssets();
@@ -71,5 +83,8 @@ namespace Assets {
             void scoreAssets();
             void flyAwayAssets();
             void pauseAssets();
+            void hitScoreAssets();
+            void perfectRoundAssets();
+            void gameOverAssets();
     };
 }

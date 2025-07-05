@@ -24,11 +24,17 @@
 #define LAUGH_MUSIC 006
 #define LAUGH_PATH "assets/audio/laugh.mp3"
 
+#define GAMEOVER_MUSIC 007
+#define GAMEOVER_PATH "assets/audio/gameover.mp3"
+
 #define SHOT_SOUND 001
 #define SHOT_PATH "assets/audio/shot.mp3"
 
 #define PAUSE_SOUND 002
 #define PAUSE_PATH "assets/audio/pause.mp3"
+
+#define POINTS_SOUND 003
+#define POINTS_PATH "assets/audio/points.mp3"
 
 namespace DuckHunt
 {
@@ -40,6 +46,8 @@ namespace DuckHunt
             sf::SoundBuffer _pauseSoundBuffer;
             sf::Sound _shotSound;
             sf::SoundBuffer _shotSoundBuffer;
+            sf::Sound _pointsSound;
+            sf::SoundBuffer _pointsSoundBuffer;
 
             void loadSounds();
             void loadMusics();
@@ -51,12 +59,12 @@ namespace DuckHunt
             int _currentMusicIndex = 001;
 
             //play
-            void playSound(int sound_id);
-            void playMusic(int music_id, bool repeat);
+            void playSound(int soundId);
+            void playMusic(int musicId, bool repeat);
             void resumeCurrentMusic();
 
             //stop
-            void stopMusic(int music_id);
+            void stopMusic(int musicId);
             void pauseCurrentMusic();
 
     };

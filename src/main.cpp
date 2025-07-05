@@ -14,9 +14,9 @@ static int displayUsage()
     return 0;
 }
 
-static int displayError(std::string error_message)
+static int displayError(std::string errorMessage)
 {
-    std::cerr << "DuckHunt.exe: " << error_message << std::endl;
+    std::cerr << "DuckHunt.exe: " << errorMessage << std::endl;
     displayUsage();
     return ERROR;
 }

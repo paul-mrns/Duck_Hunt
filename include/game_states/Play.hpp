@@ -13,13 +13,14 @@ namespace DuckHunt
     class Play
     {
     public:
-        Play(int &score, Audio &audio);
+        Play(int &score, Audio &audio, int round);
         ~Play() = default;
 
         void handleInput(input &in, sf::Vector2i mousePos);
         void update();
         void draw(sf::RenderWindow& window);
         bool isGameOver() const { return _gameOver; };
+        bool isNewRoundStart() const { return _newRoundCanStart; };
 
     private:
         std::unique_ptr<Assets::PlayAssets> _assets;
@@ -29,7 +30,7 @@ namespace DuckHunt
         void playLoop(float dt);
 
         bool _pause = false;
-        int _round = 1;
+        int _round;
         int _ammo = 3;
         int& _score;
         bool _gameOver = false;
@@ -37,6 +38,7 @@ namespace DuckHunt
 
         //current duck
         int _duckIndex = 0;
+        int _ducksHit = 0;
         std::vector<hitResults> _duckHits;
         float _currentDuckBlinkTimer = 0.f;
         bool _currentDuckBlinking = true;
@@ -91,10 +93,23 @@ namespace DuckHunt
 
         //end round
         bool _endGame = false;
-        bool _newRound = false;
         bool isPerfectRound();
+        int getPerfectRoundBonus(int round);
+
+        //Round outro
+        float _jingleTimer = 0.f;
+        bool _jingleStarted = false;
+        bool _ducksFlickering = true;
+        bool _perfectBonusStarted = false;
+        float _perfectTimer = 0.f;
+        float _flickerTimer = 0.f;
+
+        //new round
+        bool _newRoundCanStart = false;
+        bool _newRound = false;
+        bool _perfectRound = false;
         bool canStartNewRound();
-        void startNewRound();
+        void newRoundOutro(float dt);
 
     };
 }

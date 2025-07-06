@@ -51,6 +51,7 @@ namespace DuckHunt
         input _input;
         gamemode _gamemode;
         Audio _audio;
+        int _round = 1;
 
         //gamestates
         std::unique_ptr<DuckHunt::Menu> _menu;

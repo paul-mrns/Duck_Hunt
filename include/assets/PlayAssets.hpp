@@ -21,9 +21,13 @@ namespace Assets {
             //visuals
             sf::Texture _backgroundText;
             sf::Sprite _backgroundSpr;
+            sf::Texture _flyAwayBackgroundText;
+            sf::Sprite _flyAwayBackgroundSpr;
             sf::Texture _grassText;
             sf::Sprite _grassSpr;
             sf::Texture _spritesheet;
+
+            //Hud
             sf::Sprite _bulletSpr;
             sf::Sprite _redDuckSpr;
             sf::Sprite _whiteDuckSpr;
@@ -34,16 +38,16 @@ namespace Assets {
             sf::Texture _pauseText;
             sf::Sprite _flyAwaySpr;
             sf::Texture _flyAwayText;
-            sf::Sprite _gameoverBgSpr;
-            sf::Texture _gameoverBgText;
+            sf::Sprite _textBgSpr;
+            sf::Texture _textBgText;
+            sf::Sprite _roundBgSpr;
+            sf::Texture _roundBgText;
 
             //values background
-            sf::RectangleShape _roundBg;
             sf::RectangleShape _greenRoundBg;
             sf::RectangleShape _ammoBg;
             sf::RectangleShape _hitBg;
             sf::RectangleShape _scoreBg;
-            sf::RectangleShape _perfectRoundBg;
  
             //texts
             sf::Font _font;
@@ -61,18 +65,15 @@ namespace Assets {
             //setters
             void setRound(int round);
             void setAmmo(int ammos);
-            void setHits(int hits);
             void setScore(int score);
             void setHitScore(int hitScore, sf::Vector2f pos);
-            void setPerfectRoundScore(int perfectRoundScore);
 
         private:
             int _round;
             int _ammo;
-            int _hits;
             int _score;
             int _hitScore;
-            int _perfectRoundScore;
+            int _perfectRoundBonus;
             sf::Color _green{137, 243, 54};
             sf::Color _blue{0, 204, 255};
 

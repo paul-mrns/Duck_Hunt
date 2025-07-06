@@ -60,7 +60,7 @@ void DuckHunt::Core::menuHandler()
 void DuckHunt::Core::playHandler()
 {
    if (!_play) {
-        _play = std::make_unique<Play>(_score, _audio);
+        _play = std::make_unique<Play>(_score, _audio, _round);
         _audio.playMusic(INTRO_MUSIC, false);
    }
     _play->handleInput(_input, sf::Mouse::getPosition(_window));
@@ -68,11 +68,16 @@ void DuckHunt::Core::playHandler()
         _input = none;
     _play->update();
     _play->draw(_window);
-    if (_play->isGameOver() == true) {
+    if (_play->isGameOver()) {
         _state = menu;
         _play.reset();
         saveScore();
         _score = 0;
+        return;
+    }
+    if (_play->isNewRoundStart()) {
+        _play.reset();
+        _round++;
         return;
     }
 }

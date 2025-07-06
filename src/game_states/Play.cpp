@@ -6,10 +6,11 @@
 
 #include "Core.hpp"
 
-DuckHunt::Play::Play(int &score, Audio& audio)
-    : _audio(audio), _score(score)
+DuckHunt::Play::Play(int &score, Audio& audio, int round)
+    : _audio(audio), _round(round),  _score(score)
 {
-    _assets = std::make_unique<Assets::PlayAssets>(std::vector<int>{1, 3, 0, 0, 1000, 10000});
+    int perfectRoundBonus = getPerfectRoundBonus(_round);
+    _assets = std::make_unique<Assets::PlayAssets>(std::vector<int>{_round, 3, _score, 1000, perfectRoundBonus});
     _dog = std::make_unique<Animation::Dog>(_assets->_spritesheet);
     _blackScreen.setSize({WINDOW_WIDTH, WINDOW_HEIGHT});
     _blackScreen.setFillColor(sf::Color::Black);
@@ -19,29 +20,30 @@ DuckHunt::Play::Play(int &score, Audio& audio)
         _duckHits.push_back(Missed);
 }
 
-void DuckHunt::Play::startNewRound()
+int DuckHunt::Play::getPerfectRoundBonus(int round)
 {
-    _gameHasStarted = false;
-    _round++;
-    _assets->setRound(_round);
-    _currentDuckBlinking = true;
-    _currentDuckBlinkTimer = 0.f;
-    reload();
-    _duckHits[0] = Blinking;
-    for (size_t i = 1; i < _duckHits.size(); i++)
-        _duckHits[i] = Missed;
+    if (round <= 10)
+        return 10000;
+    else if (round <= 12)
+        return 15000;
+    else if (round <= 14)
+        return 20000;
+    else if (round <= 19)
+        return 25000;
+    else
+        return 30000;
 }
 
 bool DuckHunt::Play::canStartNewRound()
 {
-    int duckHits = 0;
     int required = 6;
 
     if (isPerfectRound())
         return true;
+    _ducksHit = 0;
     for (size_t i = 0; i < _duckHits.size(); i++)
         if (_duckHits[i] == Hit)
-            duckHits++;
+            _ducksHit++;
     if (_round > 10)
         required++; // 7 ducks
     if (_round > 12)
@@ -50,22 +52,20 @@ bool DuckHunt::Play::canStartNewRound()
         required++; // 9 ducks
     if (_round > 19)
         required++; // 10 ducks
-    return duckHits >= required;
+    return _ducksHit >= required;
 }
 
 bool DuckHunt::Play::isPerfectRound()
 {
-    int duckHits = 0;
-
     for (size_t i = 0; i < _duckHits.size(); i++)
         if (_duckHits[i] == Hit)
-            duckHits++;
-    return duckHits == 10;
+            _ducksHit++;
+    return _ducksHit == 10;
 }
 
 void DuckHunt::Play::drawIntro(sf::RenderWindow& window)
 {
-    window.draw(_assets->_roundBg);
+    window.draw(_assets->_roundBgSpr);
     window.draw(_assets->_roundText);
     if (_dog) {
         if (_dog->isFalling()) {
@@ -97,7 +97,10 @@ void DuckHunt::Play::drawHUD(sf::RenderWindow& window)
 
 void DuckHunt::Play::draw(sf::RenderWindow& window)
 {
-    window.draw(_assets->_backgroundSpr);
+    if (!_flyAway)
+        window.draw(_assets->_backgroundSpr);
+    else
+        window.draw(_assets->_flyAwayBackgroundSpr);
     if (_duckActive && _duck) {
         if (_duck && _duck->isFalling())
             window.draw(_assets->_hitScoreText);
@@ -115,12 +118,17 @@ void DuckHunt::Play::draw(sf::RenderWindow& window)
     else
         window.draw(_assets->_grassSpr);
     drawHUD(window);
-    if (_pause)
-        window.draw(_assets->_pauseSpr);
     if (_gameOverSequence) {
-        window.draw(_assets->_gameoverBgSpr);
+        window.draw(_assets->_textBgSpr);
         window.draw(_assets->_gameoverText);
     }
+    if (_perfectBonusStarted) {
+        window.draw(_assets->_textBgSpr);
+        window.draw(_assets->_perfectRoundText);
+        window.draw(_assets->_perfectRoundScoreText);
+    }
+    if (_pause)
+        window.draw(_assets->_pauseSpr);
 }
 
 void DuckHunt::Play::drawAmmo(sf::RenderWindow &window, std::vector<sf::Sprite> bullets)
@@ -139,6 +147,16 @@ void DuckHunt::Play::drawHits(sf::RenderWindow &window, std::vector<sf::Sprite> 
             window.draw(redDucks[i]);
         if (_duckHits[i] == Blinking)
             if (_currentDuckBlinking)
+                window.draw(whiteDucks[i]);
+    }
+    if (_jingleStarted) {
+        if (!_ducksFlickering) {
+            for (int i = 0; i < _ducksHit; i++)
+                window.draw(redDucks[i]);
+            for (int i = _ducksHit; i < 10; i++)
+                window.draw(whiteDucks[i]);
+        } else
+            for (int i = 0; i < 10; i++)
                 window.draw(whiteDucks[i]);
     }
 }
@@ -179,15 +197,8 @@ void DuckHunt::Play::shoot(sf::Vector2i mousePos)
             _duck->flyAway();
         }
     }
-    if (_duckIndex >= 9) {
+    if (_duckIndex >= 9)
         _pointsCounting = true;
-        /*if (canStartNewRound()) {
-            startNewRound();
-            return;
-        } else {
-            _gameOverSequence = true;
-        }*/
-    }
 } 
 
 void DuckHunt::Play::handleInput(input &in, sf::Vector2i mousePos)
@@ -268,13 +279,30 @@ void DuckHunt::Play::duckHasBeenCaught()
 void DuckHunt::Play::pointsCountingSequence(float dt)
 {
     _pointsCountingTimer += dt;
+
+    if (isPerfectRound()) {
+        _pointsCounting = false;
+        _pointsCountingIndex = 0;
+        _endGame = true;
+        _perfectRound = true;
+        return;
+    }
+
     if (_pointsCountingTimer >= 0.25f && _pointsCountingIndex < _duckHits.size()) {
         _pointsCountingTimer = 0.f;
         for (size_t i = _pointsCountingIndex; i < _duckHits.size(); ++i) {
-            if (_duckHits[i] == Hit) {
-                std::swap(_duckHits[i], _duckHits[_pointsCountingIndex]);
-                _audio.playSound(POINTS_SOUND);
-                _pointsCountingIndex++;
+            if (_duckHits[i] == Missed) {
+                for (size_t j = _duckHits.size() - 1; j > i; --j) {
+                    if (_duckHits[j] == Hit) {
+                        std::swap(_duckHits[i], _duckHits[j]);
+                        _audio.playSound(POINTS_SOUND);
+                        _pointsCountingIndex = i + 1;
+                        return;
+                    }
+                }
+                _pointsCounting = false;
+                _pointsCountingIndex = 0;
+                _endGame = true;
                 return;
             }
         }
@@ -296,6 +324,43 @@ void DuckHunt::Play::gameOverLaugh(float dt)
     }
     if (_dog->isAnimationDone())
         _gameOver = true;
+}
+
+void DuckHunt::Play::newRoundOutro(float dt)
+{
+    _jingleTimer += dt;
+
+    if (!_jingleStarted) {
+        _audio.playMusic(ROUND_END_MUSIC, false);
+        _jingleStarted = true;
+        _jingleTimer = 0.f;
+        _ducksFlickering = true;
+        return;
+    }
+    if (_jingleTimer < 4.25f) {
+        if (!_perfectBonusStarted) {
+            _flickerTimer += dt;
+            if (_flickerTimer >= 0.25f) {
+                _ducksFlickering = !_ducksFlickering;
+                _flickerTimer = 0.f;
+            }
+        }
+        return;
+    }
+    if (_perfectRound && !_perfectBonusStarted) {
+        _score += getPerfectRoundBonus(_round);
+        _assets->setScore(_score);
+        _audio.playMusic(PERFECT_ROUND_MUSIC, false);
+        _perfectBonusStarted = true;
+        _perfectTimer = 0.f;
+        return;
+    }
+    if (_perfectBonusStarted) {
+        _perfectTimer += dt;
+        if (_perfectTimer < 2.5f)
+            return;
+    }
+    _newRoundCanStart = true;
 }
 
 void DuckHunt::Play::playLoop(float dt)
@@ -354,15 +419,19 @@ void DuckHunt::Play::playLoop(float dt)
             pointsCountingSequence(dt);
 
     if (_endGame) {
-        if (!canStartNewRound())
-            _gameOverSequence = true;
-        else
+        if (canStartNewRound())
             _newRound = true;
+        else
+            _gameOverSequence = true;
         _endGame = false;
+        return;
     }
     
     if (_gameOverSequence)
         gameOverLaugh(dt);
+
+    if (_newRound)
+        newRoundOutro(dt);
 }
 
 void DuckHunt::Play::update()

@@ -35,6 +35,8 @@ void DuckHunt::Audio::loadMusics()
     createMusic(CAUGHT_PATH);
     createMusic(LAUGH_PATH);
     createMusic(GAMEOVER_PATH);
+    createMusic(ROUND_END_PATH);
+    createMusic(PERFECT_ROUND_PATH);   
 }
 
 DuckHunt::Audio::Audio()

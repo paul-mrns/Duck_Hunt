@@ -15,6 +15,7 @@ namespace Assets
         public:
             AAssets() = default;
             ~AAssets() = default;
+        protected:
 
             void resizeSprite(sf::Sprite &sprite, const sf::Texture &texture, float width, float height)
             {

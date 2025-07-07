@@ -191,12 +191,9 @@ void DuckHunt::Play::shoot(sf::Vector2i mousePos)
         _score += _duck->getDuckScore(_round);
         _assets->setScore(_score);
         _duckHits[_duckIndex] = Hit;
-    } else {
-        if (_ammo == 0 && _duck) {
+    } else
+        if (_ammo == 0 && _duck)
             _flyAway = true;
-            _duck->flyAway();
-        }
-    }
     if (_duckIndex >= 9)
         _pointsCounting = true;
 } 
@@ -223,8 +220,7 @@ void DuckHunt::Play::handleInput(input &in, sf::Vector2i mousePos)
 void DuckHunt::Play::spawnDuck()
 {
     if (!_duckActive) {
-        _duck = std::make_unique<Animation::Duck>(_assets->_spritesheet);
-        _duck->setDirection({ (rand() % 2 ? 1.f : -1.f), -1.f });
+        _duck = std::make_unique<Animation::Duck>(_assets->_spritesheet, _round);
         _duckActive = true;
     }
 }
@@ -252,6 +248,7 @@ void DuckHunt::Play::dogCatchingDuck(float dt)
         _audio.playMusic(CAUGHT_MUSIC, false);
         _dogCatching = true;
         _dogHasAppeared = true;
+        _duckActive = false;
     }
     _dog->update(dt);
 }
@@ -262,7 +259,8 @@ void DuckHunt::Play::dogLaughing()
     _audio.playMusic(LAUGH_MUSIC, false);
     _dogLaughing = true;
     _dogHasAppeared = true;
-    _flyAway = false;
+    if (_flyAway)
+        _flyAway = false;
 }
 
 void DuckHunt::Play::duckHasBeenCaught()
@@ -271,7 +269,6 @@ void DuckHunt::Play::duckHasBeenCaught()
     reload();
     _duckIndex++;
     _duckHits[_duckIndex] = Blinking;
-    _duckActive = false;
     _dogCatching = false;
     _dogHasAppeared = false;
 }
@@ -397,7 +394,7 @@ void DuckHunt::Play::playLoop(float dt)
     if (_duck && _flyAway)
         _duck->flyAway();
 
-    if (_duck && _duck->isOffScreen() && _flyAway)
+    if (_duck && _duck->isOffScreen() && !_dogLaughing)
         dogLaughing();
 
     if (_dog && _dogLaughing) {
@@ -405,12 +402,12 @@ void DuckHunt::Play::playLoop(float dt)
         if (_dog->isAnimationDone()) {
             _dogHasAppeared = false;
             _dogLaughing = false;
-            _duck.reset();
-            _duckActive = false;
             _duckHits[_duckIndex] = Missed;
             _duckIndex++;
             _duckHits[_duckIndex] = Blinking;
             reload();
+            _duckActive = false;
+            _duck.reset();
         }
     }
 

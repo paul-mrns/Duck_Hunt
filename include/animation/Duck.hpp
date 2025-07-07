@@ -8,8 +8,9 @@
 #pragma once
 #include "AAnimation.hpp"
 
-#define SPRITE_WIDTH 77
-#define SPRITE_HEIGTH 77
+#define SPRITE_WIDTH 68
+#define SPRITE_HEIGHT 62
+#define SPRITE_SCALE 1.6f
 
 #define BLUE_DUCK 0
 #define BLACK_DUCK 1
@@ -21,7 +22,7 @@ enum DuckFlight { Horizontal, Diagonal, Up };
 namespace Animation {
     class Duck : public AAnimation {
     public:
-        Duck(const sf::Texture& texture);
+        Duck(const sf::Texture& texture, int round);
 
         void update(float dt);
         void setDirection(sf::Vector2f dir);
@@ -39,8 +40,8 @@ namespace Animation {
         void initFrames();
         void applyAnimationFrame(float dt);
         void setFallFrames();
-        void setFlyAwayFrames();
-        void flipIfNeeded();
+        float calculateSpeedFromRound(int round) const;
+        void randomiseValues();
         std::vector<sf::IntRect> getFlyFrames(int color, DuckFlight fligth);
 
         sf::Vector2f _direction;
@@ -53,11 +54,24 @@ namespace Animation {
         sf::IntRect _fallFrame;
         sf::Clock _hitClock;
 
-        float _speed;
-        bool _isFlipped = false;
+        //flyAway
+        float _flyAwayElapsed = 0.f;
+        float _flyAwaySpeed = 0.f;
 
         //falling 
         float _fallElapsed = 0.f;
-        float _fallSpeed;
+        float _fallSpeed = 0.f;
+
+        //flying
+        float _flightTime = 0.f;
+        bool _canLeaveScreen = false;
+        float _speed;
+        bool _isFlipped = false;
+        int _currentFrame = 0;
+        bool _hasLeftGrass = false;
+
+        void duckFlying(float dt);
+        bool bounce(sf::FloatRect bounds);
+        void flipIfNeeded();
     };
 }

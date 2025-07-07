@@ -70,12 +70,13 @@ void DuckHunt::Menu::handleClick(sf::Vector2i mousePos)
     sf::Vector2f mouseF(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 
     for (int i = 0; i < 3; ++i) {
-        if (_assets->_games[i].getGlobalBounds().contains(mouseF)) {
+        if (_assets->_games[i].getGlobalBounds().contains(mouseF) && i == 0) {
             _gamemode = getGamemode(_selectedOption);
             _startGame = true;
             _audio.stopMusic(START_MUSIC);
             break;
-        }
+        } else if (_assets->_games[i].getGlobalBounds().contains(mouseF) && i != 0)
+            std::cout << "Sorry but this gamemode is unavailable\n";
     }
     if (_assets->_scores.getGlobalBounds().contains(mouseF))
         _scoreboardActive = true;
@@ -100,11 +101,12 @@ void DuckHunt::Menu::handleInput(input &in, sf::Vector2i mousePos)
     if (in == enter) {
         if (_selectedOption == 3)
             _scoreboardActive = true;
-        else {
+        else if (_selectedOption == 0) {
             _gamemode = getGamemode(_selectedOption);
             _startGame = true;
             _audio.stopMusic(START_MUSIC);
-        }
+        } else
+            std::cout << "Sorry but this gamemode is unavailable\n";
     } else if (in == arrowDown)
         _selectedOption = (_selectedOption == 3) ? 0 : _selectedOption + 1;
     else if (in == arrowUp)

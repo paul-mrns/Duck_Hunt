@@ -1,8 +1,8 @@
 /*
 ** Paul Mourens project
 ** Duck Hunt cpp
-** PlayAssets.cpp
-** assets handling: Play
+** ClassicAssets.cpp
+** assets handling: Classic gamemode
 */
 
 #pragma once
@@ -13,10 +13,10 @@
 #define WINDOW_HEIGHT 1080
 
 namespace Assets {
-    class PlayAssets : public AAssets {
+    class ClassicAssets : public AAssets {
         public:
-            PlayAssets(std::vector<int> values);
-            ~PlayAssets() = default;
+            ClassicAssets(std::vector<int> values);
+            ~ClassicAssets() = default;
 
             //visuals
             sf::Texture _backgroundText;

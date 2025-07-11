@@ -57,26 +57,26 @@ void DuckHunt::Core::menuHandler()
     }
 }
 
-void DuckHunt::Core::playHandler()
+void DuckHunt::Core::classicHandler()
 {
-   if (!_play) {
-        _play = std::make_unique<Play>(_score, _audio, _round);
+   if (!_classic) {
+        _classic = std::make_unique<Classic>(_score, _audio, _round, _gamemode + 1);
         _audio.playMusic(INTRO_MUSIC, false);
    }
-    _play->handleInput(_input, sf::Mouse::getPosition(_window));
+    _classic->handleInput(_input, sf::Mouse::getPosition(_window));
     if (_input != quit)
         _input = none;
-    _play->update();
-    _play->draw(_window);
-    if (_play->isGameOver()) {
+    _classic->update();
+    _classic->draw(_window);
+    if (_classic->isGameOver()) {
         _state = menu;
-        _play.reset();
+        _classic.reset();
         saveScore();
         _score = 0;
         return;
     }
-    if (_play->isNewRoundStart()) {
-        _play.reset();
+    if (_classic->isNewRoundStart()) {
+        _classic.reset();
         _round++;
         return;
     }
@@ -86,8 +86,12 @@ void DuckHunt::Core::stateHandler()
 {
     if (_state == menu)
         menuHandler();
-    else if (_state == play)
-        playHandler();
+    else if (_state == play) {
+        if (_gamemode == oneDuck || _gamemode == twoDucks)
+            classicHandler();
+        else
+            std::cout << "Clay Shooting is unavailable at the moment\n";
+    }
 }
 
 void DuckHunt::Core::gameLoop()

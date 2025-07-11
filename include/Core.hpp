@@ -22,11 +22,11 @@
 #include "Audio.hpp"
 #include "assets/AAssets.hpp"
 #include "assets/MenuAssets.hpp"
-#include "assets/PlayAssets.hpp"
+#include "assets/ClassicAssets.hpp"
 #include "animation/Dog.hpp"
 #include "animation/Duck.hpp"
 #include "game_states/Menu.hpp"
-#include "game_states/Play.hpp"
+#include "game_states/Classic.hpp"
 
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
@@ -56,7 +56,7 @@ namespace DuckHunt
 
         //gamestates
         std::unique_ptr<DuckHunt::Menu> _menu;
-        std::unique_ptr<DuckHunt::Play> _play;
+        std::unique_ptr<DuckHunt::Classic> _classic;
 
         // Score
         int _score = 0;
@@ -72,6 +72,6 @@ namespace DuckHunt
         //stateHandler
         void stateHandler();
         void menuHandler();
-        void playHandler();
+        void classicHandler();
     };
 }

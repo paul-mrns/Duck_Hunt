@@ -36,8 +36,19 @@ void Animation::Dog::initFramesRects()
         {388, 125, 68, 80},
         {509, 125, 68, 80}
     };
-    _happy1Frame = {635, 0, 115, 100};
+    _happy1Frame = {638, 20, 112, 100};
+    _happy2Frame = {638, 126, 112, 100};
     _sniffOrder = {0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 4, 3, 4};
+}
+
+void Animation::Dog::initHappy(sf::Vector2f pos, int ducksCaught)
+{
+    if (ducksCaught == 0)
+        return;
+    if (ducksCaught == 1)
+        initHappy1(pos);
+    else if (ducksCaught == 2)
+        initHappy2(pos);
 }
 
 void Animation::Dog::initHappy1(sf::Vector2f pos)
@@ -49,6 +60,19 @@ void Animation::Dog::initHappy1(sf::Vector2f pos)
     _speed = 0.15f;
     _sprite.setTextureRect(_happy1Frame);
     _sprite.setPosition(pos);
+    _sprite.setScale(1.5f, 1.5f);
+}
+
+void Animation::Dog::initHappy2(sf::Vector2f pos)
+{
+    _state = DogState::Happy2;
+    _catchPhase = CatchPhase::Rising;
+    _catchTimer = 0.f;
+    _elapsed = 0.f;
+    _speed = 0.15f;
+    _sprite.setTextureRect(_happy2Frame);
+    _sprite.setPosition(pos);
+    _sprite.setScale(1.5f, 1.5f);
 }
 
 void Animation::Dog::initLaugh(sf::Vector2f pos)
@@ -75,16 +99,16 @@ void Animation::Dog::initGameoverLaugh(sf::Vector2f pos)
     _sprite.setScale(1.5f, 1.5f);
 }
 
-void Animation::Dog::happy1(float dt)
+void Animation::Dog::happy(float dt)
 {
     sf::Vector2f pos = _sprite.getPosition();
 
     _catchTimer += dt;
     if (_catchPhase == CatchPhase::Rising) {
         float progress = _catchTimer / 0.5f;
-        pos.y = 775.f - (120.f * std::min(progress, 1.f));
+        pos.y = 775.f - (95.f * std::min(progress, 1.f));
         if (_catchTimer >= 0.5f) {
-            pos.y = 655.f;
+            pos.y = 680.f;
             _catchPhase = CatchPhase::Holding;
             _catchTimer = 0.f;
         }
@@ -100,7 +124,7 @@ void Animation::Dog::happy1(float dt)
     
     if (_catchPhase == CatchPhase::Falling) {
         float progress = _catchTimer / 0.5f;
-        pos.y = 655.f + (120.f * std::min(progress, 1.f));
+        pos.y = 680.f + (95.f * std::min(progress, 1.f));
         if (_catchTimer >= 0.5f) {
             pos.y = 775.f;
             _state = DogState::Finished;
@@ -240,8 +264,8 @@ void Animation::Dog::update(float dt)
         }
     } else if (_state == DogState::Jump)
         jump(dt);
-    else if (_state == DogState::Happy1)
-        happy1(dt);
+    else if (_state == DogState::Happy1 || _state == DogState::Happy2)
+        happy(dt);
     else if (_state == DogState::Laughing)
         laugh(dt);
     else if (_state == DogState::GoLaughing)

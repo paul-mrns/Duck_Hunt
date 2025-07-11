@@ -16,9 +16,9 @@ SRC =	src/main.cpp 	\
 		src/Score.cpp	\
 		src/Audio.cpp 	\
 		src/game_states/Menu.cpp	\
-		src/game_states/Play.cpp \
+		src/game_states/Classic.cpp \
 		src/assets/MenuAssets.cpp	\
-		src/assets/PlayAssets.cpp	\
+		src/assets/ClassicAssets.cpp	\
 		src/animation/Dog.cpp	\
 		src/animation/AAnimation.cpp	\
 		src/animation/Duck.cpp

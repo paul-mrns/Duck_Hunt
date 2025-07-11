@@ -26,14 +26,17 @@ namespace Animation {
 
         void update(float dt);
         void setDirection(sf::Vector2f dir);
-        void isHit();
+        void Hit();
         void flyAway();
 
-        DuckState getState() const;
+        DuckState getState() const { return _state; };
+        bool isFalling() const { return _state == DuckState::Falling; };
+        bool isCaught() const { return _state == DuckState::Caught; };
+        bool isFlying() const { return (_state == DuckState::Flying && !isOffScreen());};
+        bool isFlyingAway() const { return _state == DuckState::FlyAway; };
+        bool isHit() const { return _state == DuckState::Hit; };
         bool isOffScreen() const;
-        bool isFalling() const;
-        void flyingAway() { return; };
-        bool isCaught() const;
+        bool isOnScreen() const { return _state != Caught && !isOffScreen(); };
         int getDuckScore(int round) const;
 
     private:

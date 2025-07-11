@@ -1,12 +1,12 @@
 /*
 ** Paul Mourens project
 ** Duck Hunt cpp
-** Core.cpp
+** ClassicAssets.cpp
 */
 
 #include "Core.hpp"
 
-Assets::PlayAssets::PlayAssets(std::vector<int> values)
+Assets::ClassicAssets::ClassicAssets(std::vector<int> values)
 {
     if (values.size() != 5)
         return;
@@ -28,7 +28,7 @@ Assets::PlayAssets::PlayAssets(std::vector<int> values)
     gameOverAssets();
 }
 
-void Assets::PlayAssets::visualAssets()
+void Assets::ClassicAssets::visualAssets()
 {
     _backgroundText.loadFromFile("assets/play/background.png");
     _backgroundSpr.setTexture(_backgroundText);
@@ -46,7 +46,7 @@ void Assets::PlayAssets::visualAssets()
 
 }
 
-void Assets::PlayAssets::roundAssets()
+void Assets::ClassicAssets::roundAssets()
 {
     _roundText.setFont(_font);
     _roundText.setString("ROUND\n\n  " + std::to_string(_round));
@@ -68,7 +68,7 @@ void Assets::PlayAssets::roundAssets()
     _greenRoundBg.setSize((sf::Vector2f){greenRoundBounds.width + 3, greenRoundBounds.height + 3});
 }
 
-void Assets::PlayAssets::ammoAssets()
+void Assets::ClassicAssets::ammoAssets()
 {
     _ammoText.setFont(_font);
     _ammoText.setString("SHOT");
@@ -89,7 +89,7 @@ void Assets::PlayAssets::ammoAssets()
     }
 }
 
-void Assets::PlayAssets::hitAssets()
+void Assets::ClassicAssets::hitAssets()
 {
     _redDuckSpr.setTexture(_spritesheet);
     _redDuckSpr.setTextureRect(sf::IntRect(26, 557, 20, 20));
@@ -134,7 +134,7 @@ static std::string alignString(int score)
     return scorestring;
 }
 
-void Assets::PlayAssets::scoreAssets()
+void Assets::ClassicAssets::scoreAssets()
 {
     _scoreText.setFont(_font);
     _scoreText.setString(alignString(_score) + "\n SCORE");
@@ -147,7 +147,7 @@ void Assets::PlayAssets::scoreAssets()
     _scoreBg.setPosition(1700.f, 930.f);
 }
 
-void Assets::PlayAssets::pauseAssets()
+void Assets::ClassicAssets::pauseAssets()
 {
     _pauseText.loadFromFile("assets/play/pause.png");
     _pauseSpr.setTexture(_pauseText);
@@ -156,7 +156,7 @@ void Assets::PlayAssets::pauseAssets()
     centerSpriteAxisX(_pauseSpr);
 }
 
-void Assets::PlayAssets::flyAwayAssets()
+void Assets::ClassicAssets::flyAwayAssets()
 {
     _flyAwayText.loadFromFile("assets/play/fly_away.png");
     _flyAwaySpr.setTexture(_flyAwayText);
@@ -165,7 +165,7 @@ void Assets::PlayAssets::flyAwayAssets()
     centerSpriteAxisX(_flyAwaySpr);
 }
 
-void Assets::PlayAssets::hitScoreAssets()
+void Assets::ClassicAssets::hitScoreAssets()
 {
     _hitScoreText.setFont(_font);
     _hitScoreText.setString(std::to_string(_hitScore));
@@ -173,7 +173,7 @@ void Assets::PlayAssets::hitScoreAssets()
     _hitScoreText.setFillColor(sf::Color::White);
 }
 
-void Assets::PlayAssets::perfectRoundAssets()
+void Assets::ClassicAssets::perfectRoundAssets()
 {
     _perfectRoundText.setFont(_font);
     _perfectRoundText.setString("PERFECT!!");
@@ -187,7 +187,7 @@ void Assets::PlayAssets::perfectRoundAssets()
     centerTextAxisX(_perfectRoundScoreText);
 }
 
-void Assets::PlayAssets::gameOverAssets()
+void Assets::ClassicAssets::gameOverAssets()
 {
     _textBgText.loadFromFile("assets/play/text_background.png");
     _textBgSpr.setTexture(_textBgText);
@@ -201,7 +201,7 @@ void Assets::PlayAssets::gameOverAssets()
     centerTextAxisX(_gameoverText);
 }
 
-void Assets::PlayAssets::setRound(int round)
+void Assets::ClassicAssets::setRound(int round)
 {
     _round = round;
     if (_round <= 0)
@@ -218,18 +218,18 @@ void Assets::PlayAssets::setRound(int round)
         _requiredBar.setString(std::string(10 * 3, '|'));       
 }
 
-void Assets::PlayAssets::setAmmo(int ammo)
+void Assets::ClassicAssets::setAmmo(int ammo)
 {
     _ammo = ammo;
 }
 
-void Assets::PlayAssets::setScore(int score)
+void Assets::ClassicAssets::setScore(int score)
 {
     _score = score;
     _scoreText.setString(alignString(_score) + "\n SCORE");
 }
 
-void Assets::PlayAssets::setHitScore(int hitScore, sf::Vector2f pos)
+void Assets::ClassicAssets::setHitScore(int hitScore, sf::Vector2f pos)
 {
     _hitScore = hitScore;
     _hitScoreText.setString(std::to_string(_hitScore));

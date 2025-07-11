@@ -137,7 +137,7 @@ void Animation::Duck::setFallFrames()
     _fallSpeed = ((850.f - startY) / 1.5f) + 100;
 }
 
-void Animation::Duck::isHit()
+void Animation::Duck::Hit()
 {
     if (_state == DuckState::Flying) {
         _sprite.setTextureRect(_hitFrame);
@@ -156,16 +156,6 @@ void Animation::Duck::flyAway()
         _flyAwayElapsed = 0.f;
         _flyAwaySpeed = 1000.f;
     }
-}
-
-bool Animation::Duck::isCaught() const
-{
-    return _state == Caught;
-}
-
-DuckState Animation::Duck::getState() const
-{
-    return _state;
 }
 
 int Animation::Duck::getDuckScore(int round) const
@@ -194,12 +184,6 @@ bool Animation::Duck::isOffScreen() const
         bounds.top + bounds.height < 0 || bounds.left + bounds.width < 0 ||
         bounds.top > WINDOW_HEIGHT || bounds.left > WINDOW_WIDTH
     );
-}
-
-
-bool Animation::Duck::isFalling() const
-{
-    return _state == DuckState::Falling;
 }
 
 void Animation::Duck::flipIfNeeded()

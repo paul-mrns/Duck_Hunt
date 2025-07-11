@@ -6,15 +6,16 @@
 
 #pragma once
 #include "Core.hpp"
+#define MAX_DUCKS_PER_ROUND 10
 
 namespace DuckHunt
 {
     enum hitResults { Missed, Hit, Blinking };
-    class Play
+    class Classic
     {
     public:
-        Play(int &score, Audio &audio, int round);
-        ~Play() = default;
+        Classic(int &score, Audio &audio, int round, int ducks);
+        ~Classic() = default;
 
         void handleInput(input &in, sf::Vector2i mousePos);
         void update();
@@ -23,7 +24,7 @@ namespace DuckHunt
         bool isNewRoundStart() const { return _newRoundCanStart; };
 
     private:
-        std::unique_ptr<Assets::PlayAssets> _assets;
+        std::unique_ptr<Assets::ClassicAssets> _assets;
         DuckHunt::Audio& _audio;
         sf::Clock _clock;
 
@@ -35,6 +36,7 @@ namespace DuckHunt
         int& _score;
         bool _gameOver = false;
         bool _gameHasStarted = false;
+        int _maxDucksOnScreen;
 
         //current duck
         int _duckIndex = 0;
@@ -50,18 +52,21 @@ namespace DuckHunt
         void drawHUD(sf::RenderWindow& window);
 
         // Game mechanics
+        bool canShoot();
         void shoot(sf::Vector2i mousePos);
         void reload();
 
         // Duck
-        std::unique_ptr<Animation::Duck> _duck;
-        bool _duckActive = false;
-        sf::FloatRect _duckBounds;
+        std::vector<std::unique_ptr<Animation::Duck>> _ducks;
         bool _flyAway = false;
-        void spawnDuck();
-        void duckHasBeenHit();
+        float _duckSpawnTimer = 0.f;
+        std::pair<int, int> _caughtOrder = {-1, -1};
+        void spawnDuck(float dt);
+        void duckHasBeenHit(int duckIndex);
         void duckHasBeenCaught();
-        bool isDuckHit();
+        sf::Vector2f getLastCaughtPos(int ducksCaught);
+        bool ducksAllLeft();
+        bool isDuckHit(size_t duckIndex);
 
         //Dog
         std::unique_ptr<Animation::Dog> _dog;
@@ -73,7 +78,7 @@ namespace DuckHunt
 
         // Shooting
         sf::RectangleShape _blackScreen;
-        sf::RectangleShape _hitboxRect;
+        std::vector<sf::RectangleShape> _hitboxRects;
         bool _showFlash = false;
         sf::Clock _flashClock;
         sf::Vector2f _lastMouseShot;
@@ -110,6 +115,5 @@ namespace DuckHunt
         bool _perfectRound = false;
         bool canStartNewRound();
         void newRoundOutro(float dt);
-
     };
 }

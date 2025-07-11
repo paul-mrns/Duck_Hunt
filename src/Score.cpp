@@ -48,22 +48,23 @@ void DuckHunt::Core::updateScoresList()
         return;
     }
     for (const auto& entry : _highScores)
-        outFile << entry.username << " : " << entry.score << "\n";
+        if (entry.username != "")
+            outFile << entry.username << " : " << entry.score << "\n";
     outFile.close();
 }
 
 void DuckHunt::Core::saveScore()
 {
-    bool existingScore = false;
+    bool found = false;
 
     for (auto& currentScore : _highScores) {
-        if (currentScore.username == _username && _score > currentScore.score) {
-            currentScore.score = _score;
-            existingScore = true;
+        if (currentScore.username == _username) {
+            currentScore.score = std::max(currentScore.score, _score);
+            found = true;
             break;
         }
     }
-    if (!existingScore)
+    if (!found)
         _highScores.push_back({_username, _score});
     std::sort(_highScores.begin(), _highScores.end(), compareScore);
     updateScoresList();

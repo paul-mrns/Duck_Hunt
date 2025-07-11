@@ -17,7 +17,7 @@ namespace Animation {
         public:
             Dog(const sf::Texture& texture);
 
-            void initHappy1(sf::Vector2f pos);
+            void initHappy(sf::Vector2f pos, int ducksCaught);
             void initLaugh(sf::Vector2f pos);
             void initGameoverLaugh(sf::Vector2f pos);
             void update(float dt) override;
@@ -47,9 +47,12 @@ namespace Animation {
 
             //Duck Catching
             sf::IntRect _happy1Frame;
+            sf::IntRect _happy2Frame;
             float _catchTimer = 0.f;
             CatchPhase _catchPhase = CatchPhase::Rising;
-            void happy1(float dt);
+            void initHappy1(sf::Vector2f pos);
+            void initHappy2(sf::Vector2f pos);
+            void happy(float dt);
             
             //Dog Laughing
             std::vector<sf::IntRect> _laughingFrames;

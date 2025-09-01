@@ -59,7 +59,7 @@ namespace Animation {
 
         //flyAway
         float _flyAwayElapsed = 0.f;
-        float _flyAwaySpeed = 0.f;
+        float _flyAwaySpeed = 800.f;
 
         //falling 
         float _fallElapsed = 0.f;

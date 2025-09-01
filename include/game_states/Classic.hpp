@@ -67,6 +67,7 @@ namespace DuckHunt
         sf::Vector2f getLastCaughtPos(int ducksCaught);
         bool ducksAllLeft();
         bool isDuckHit(size_t duckIndex);
+        void stopFlapMusicIfNeeded();
 
         //Dog
         std::unique_ptr<Animation::Dog> _dog;

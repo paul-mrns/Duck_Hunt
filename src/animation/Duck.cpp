@@ -154,7 +154,6 @@ void Animation::Duck::flyAway()
         _state = DuckState::FlyAway;
         _direction = {0.f, -1.f};
         _flyAwayElapsed = 0.f;
-        _flyAwaySpeed = 1000.f;
     }
 }
 

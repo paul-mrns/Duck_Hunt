@@ -291,7 +291,7 @@ void DuckHunt::Classic::duckHasBeenHit(int duckIndex)
         _caughtOrder.second = duckIndex;
     if (_ducks[duckIndex]) {
         _ducks[duckIndex]->Hit();
-        _audio.playMusic(FALL_MUSIC, false);
+        _audio.playSound(FALL_SOUND);
     }
 }
 
@@ -326,7 +326,6 @@ void DuckHunt::Classic::dogCatchingDuck(float dt)
     if (!_dogHasAppeared) {
         sf::Vector2f duckPos = getLastCaughtPos(ducksCaught);
         _dog->initHappy({ duckPos.x - 125.f, 775.f }, ducksCaught);
-        _audio.stopMusic(FALL_MUSIC);
         _audio.playMusic(CAUGHT_MUSIC, false);
         _dogCatching = true;
         _dogHasAppeared = true;
@@ -459,12 +458,24 @@ void DuckHunt::Classic::newRoundOutro(float dt)
     _newRoundCanStart = true;
 }
 
+void DuckHunt::Classic::stopFlapMusicIfNeeded()
+{
+    size_t ducksAlive = 0;
+
+    for (size_t i = 0; i < _ducks.size(); i++)
+        if (_ducks[i] && (_ducks[i]->isFlying() || _ducks[i]->isFlyingAway()))
+            ducksAlive++;
+    if (ducksAlive == 0)
+        _audio.stopMusic(FLAP_MUSIC);
+}
+
 void DuckHunt::Classic::playLoop(float dt)
 {
     if (_duckIndex < MAX_DUCKS_PER_ROUND && _ducks.size() < static_cast<size_t>(_maxDucksOnScreen))
         spawnDuck(dt);
 
     if (!_ducks.empty()) {
+        stopFlapMusicIfNeeded();
         for (size_t i = 0; i < _ducks.size(); i++) {
             if (!_ducks[i])
                 continue;

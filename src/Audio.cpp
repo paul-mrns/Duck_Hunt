@@ -24,6 +24,8 @@ void DuckHunt::Audio::loadSounds()
     _pauseSound.setBuffer(_pauseSoundBuffer);
     _pointsSoundBuffer.loadFromFile(POINTS_PATH);
     _pointsSound.setBuffer(_pointsSoundBuffer);
+    _fallSoundBuffer.loadFromFile(FALL_PATH);
+    _fallSound.setBuffer(_fallSoundBuffer);
 }
 
 void DuckHunt::Audio::loadMusics()
@@ -31,7 +33,6 @@ void DuckHunt::Audio::loadMusics()
     createMusic(START_PATH);
     createMusic(INTRO_PATH);
     createMusic(FLAP_PATH);
-    createMusic(FALL_PATH);
     createMusic(CAUGHT_PATH);
     createMusic(LAUGH_PATH);
     createMusic(GAMEOVER_PATH);
@@ -53,6 +54,8 @@ void DuckHunt::Audio::playSound(int soundId)
         _pauseSound.play();
     if (soundId == POINTS_SOUND)
         _pointsSound.play();
+    if (soundId == FALL_SOUND)
+        _fallSound.play();
 }
 
 void DuckHunt::Audio::playMusic(int musicId, bool repeat)
@@ -74,16 +77,14 @@ void DuckHunt::Audio::stopMusic(int musicId)
 
 void DuckHunt::Audio::pauseCurrentMusic()
 {
-    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size())) {
+    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size()))
         if (_musics[_currentMusicIndex]->getStatus() == sf::SoundSource::Playing)
             _musics[_currentMusicIndex]->pause();
-    }
 }
 
 void DuckHunt::Audio::resumeCurrentMusic()
 {
-    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size())) {
+    if (_currentMusicIndex >= 0 && _currentMusicIndex < static_cast<int>(_musics.size()))
         if (_musics[_currentMusicIndex]->getStatus() == sf::SoundSource::Paused)
             _musics[_currentMusicIndex]->play();
-    }
 }
